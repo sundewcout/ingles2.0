@@ -689,464 +689,519 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-    const vocabulary = [
-    { portuguese: 'noiva', english: 'bride', category: 'nouns', example: 'The bride looked beautiful in her dress.', alternatives: [{ translation: 'betrothed', example: 'The betrothed couple is planning their wedding.' }] },
-    { portuguese: 'entalhe', english: 'carving', category: 'nouns', example: 'He showed me a beautiful wood carving.' },
-    { portuguese: 'terras baixas', english: 'lowland', category: 'nouns', example: 'They live in the lowland area near the river.' },
-    { portuguese: 'babador', english: 'bib', category: 'nouns', example: 'The baby wore a bib during dinner.' },
-    { portuguese: 'traço', english: 'trace', category: 'nouns', example: 'There was no trace of him left.', alternatives: [{ translation: 'mark', example: 'The detective found a mark on the wall.' }] },
-    { portuguese: 'mancha', english: 'blemish', category: 'nouns', example: 'She was worried about a small blemish on her skin.' },
-    { portuguese: 'quantidade', english: 'amount', category: 'nouns', example: 'A large amount of money was needed for the project.' },
-    { portuguese: 'esboço', english: 'sketch', category: 'nouns', example: 'The artist made a quick sketch of the landscape.' },
-    { portuguese: 'iminente', english: 'impending', category: 'adjectives', example: 'The country was preparing for an impending storm.' },
-    { portuguese: 'apesar de', english: 'despite', category: 'prepositions', example: 'Despite the rain, we still had a great time.' },
-    { portuguese: 'corte de gastos', english: 'retrenchment', category: 'nouns', example: 'The company is undergoing a period of retrenchment.' },
-    { portuguese: 'empréstimo', english: 'loan', category: 'nouns', example: 'He took out a loan to buy a new car.' },
-    { portuguese: 'vantagem', english: 'advantage', category: 'nouns', example: 'Speaking two languages is a great advantage.' },
-    { portuguese: 'reitor', english: 'dean', category: 'nouns', example: 'The new dean of the university was announced today.' },
-    { portuguese: 'colo', english: 'lap', category: 'nouns', example: 'The cat sat on my lap.' },
-
-    // turn it down - volume
-    { portuguese: 'diminuir (volume)', english: 'turn it down', category: 'phrasal-verbs', example: 'Please turn it down, the music is too loud.' },
-
-    // turn it down - recusar
-    { portuguese: 'recusar', english: 'turn it down', category: 'phrasal-verbs', example: 'I think I will turn it down because I do not agree with the values of the company.', alternatives: [{ translation: 'decline', example: 'He decided to decline the job offer.' }] },
-
-    { portuguese: 'valer a pena', english: 'worth the time', category: 'expressions', example: 'Studying a new language is always worth the time.' },
-    { portuguese: 'aproveitar ao máximo', english: 'to make the most of it', category: 'expressions', example: 'You should make the most of your vacation.' },
-    { portuguese: 'ida e volta', english: 'back and forth', category: 'adverbs', example: 'We drove back and forth between the two cities.' },
-    { portuguese: 'ser questionado', english: 'to be grilled', category: 'idioms', example: 'He was grilled by reporters about his decisions.' },
-    { portuguese: 'demorou um pouco', english: 'it took a while', category: 'expressions', example: 'It took a while, but I finally finished the project.' },
-    { portuguese: 'mas pelo menos', english: 'but at least', category: 'conjunctions', example: 'It was a difficult journey, but at least we made it safely.' },
-    { portuguese: 'ansioso', english: 'eager', category: 'adjectives', example: 'She was eager to start her new job.' },
-    { portuguese: 'ocioso', english: 'idle', category: 'adjectives', example: 'He spent the day being completely idle.' },
-
-    // granted - verbo
-    { portuguese: 'concedido', english: 'granted', category: 'verbs', example: 'The judge granted him bail.' },
-
-    // take for granted - expressão
-    { portuguese: 'dar como certo', english: 'take for granted', category: 'idioms', example: 'He took her help for granted.' },
-
-    { portuguese: 'padronizado', english: 'standardized', category: 'adjectives', example: 'The test was standardized across all schools.' },
-    { portuguese: 'apenas', english: 'merely', category: 'adverbs', example: 'He was merely asking a question.' },
-    { portuguese: 'ultimamente', english: 'lately', category: 'adverbs', example: 'I haven\'t seen him lately.' },
-    { portuguese: 'menos', english: 'fewer', category: 'determiners', example: 'There are fewer books on the shelf now.' },
-    { portuguese: 'prontamente', english: 'readily', category: 'adverbs', example: 'He readily agreed to help with the project.' },
-
-    // pledge como promessa
-    { portuguese: 'promessa solene', english: 'pledge', category: 'nouns', example: 'They made a pledge to protect the environment.' },
-
-    // commitment com alternativa pledge
-    { portuguese: 'compromisso', english: 'commitment', category: 'nouns', example: 'Marriage is a serious commitment.', alternatives: [{ translation: 'pledge', example: 'They made a pledge to protect the environment.' }] },
-
-    // appoint
-    { portuguese: 'nomear', english: 'to appoint', category: 'verbs', example: 'They will appoint a new manager next week.' },
-
-    // designate
-    { portuguese: 'designar', english: 'to designate', category: 'verbs', example: 'The team will designate a new leader.' },
-
-    // throw
-    { portuguese: 'lançar', english: 'to throw', category: 'verbs', example: 'He threw the ball to his friend.' },
-
-    // hurl
-{ portuguese: 'arremessar com força', english: 'to hurl', category: 'verbs', example: 'He hurled the rock into the water.', alternatives: [{ translation: 'throw hard', example: 'He threw the ball hard across the field.' }] },
-
-    // toss
-{ portuguese: 'jogar de leve', english: 'to toss', category: 'verbs', example: 'Toss me the keys, please.', alternatives: [{ translation: 'throw gently', example: 'She threw the ball gently to her friend.' }] },
-
-    { portuguese: 'soneca', english: 'snooze', category: 'nouns', example: 'I took a quick snooze on the couch.' },
-
-    // board - quadro
-    { portuguese: 'quadro', english: 'board', category: 'nouns', example: 'Write the answer on the board.' },
-
-    // board - embarcar
-    { portuguese: 'embarcar', english: 'to board', category: 'verbs', example: 'We are ready to board the plane.' },
-
-    { portuguese: 'fornecer', english: 'to provide', category: 'verbs', example: 'We will provide all the necessary materials.', alternatives: [{ translation: 'provide', example: 'The school provides lunch for the students.' }] },
-    { portuguese: 'reunir', english: 'to gather', category: 'verbs', example: 'We will gather all the information we need.', alternatives: [{ translation: 'collect', example: 'Please collect the papers from the students.' }] },
-    { portuguese: 'encantar', english: 'to enchant', category: 'verbs', example: 'The music will enchant the audience.', alternatives: [{ translation: 'enchant', example: 'The story enchanted all the children.' }] }
-  ];
-    
-    const progress = new Map();
-    vocabulary.forEach(word => progress.set(word.portuguese, { correct: 0, incorrect: 0 }));
-
-    let currentWord;
-    let isAnswered = false;
-    let selectedCategory = 'all';
-    let selectedDirection = 'pt-en'; 
-    let currentVocabulary = [];
-    
-    // --- Novo: Variável para o vocabulário personalizado
-    let customWords = new Set(); 
-
-    const wordToTranslateEl = document.getElementById('word-to-translate');
-    const answerInput = document.getElementById('answer-input');
-    const checkButton = document.getElementById('check-button');
-    const feedbackMessageEl = document.getElementById('feedback-message');
-    const infoIcon = document.getElementById('info-icon');
-    const alternativeTranslationsBox = document.getElementById('alternative-translations');
-    const alternativesListContent = document.getElementById('alternatives-list-content');
-    const buttonContainer = document.querySelector('.button-container');
-
-    const gameSelectionOverlay = document.getElementById('game-selection-overlay');
-    const gameSelectionButtonsContainer = document.getElementById('game-selection-buttons');
-    const selectGameButton = document.getElementById('select-game-button');
-    
-    const directionOverlay = document.getElementById('direction-overlay');
-    const directionButtonsContainer = document.getElementById('direction-buttons');
-    const selectDirectionButton = document.getElementById('select-direction-button');
-
-    const welcomeOverlay = document.getElementById('welcome-overlay');
-    const welcomeText = document.getElementById('welcome-text');
-    const startButton = document.getElementById('start-button');
-    const mainContentWrapper = document.getElementById('main-content-wrapper');
-    
-    // --- Novos elementos para o menu de palavras personalizadas
-    const customWordsOverlay = document.getElementById('custom-words-overlay');
-    const searchInput = document.getElementById('search-input');
-    const searchResultsList = document.getElementById('search-results');
-    const selectedWordsContainer = document.getElementById('selected-words-container');
-    const startCustomGameButton = document.getElementById('start-custom-game-button');
-
-    // --- Elemento para o novo botão do dicionário
-    const dictionaryButton = document.getElementById('dictionary-button');
-    
-    function filterVocabulary(category) {
-        if (category === 'all') {
-            return vocabulary;
-        }
-        if (category === 'custom-words') {
-            // Retorna apenas as palavras que estão no conjunto customWords
-            return vocabulary.filter(word => customWords.has(word.portuguese));
-        }
-        return vocabulary.filter(word => word.category === category);
-    }
-
-    function getRandomWord() {
-        const weightedWords = [];
-        currentVocabulary.forEach(word => {
-            const wordProgress = progress.get(word.portuguese) || { correct: 0, incorrect: 0 };
-            const weight = Math.max(1, (wordProgress.incorrect + 1) * 2 - wordProgress.correct);
-            for (let i = 0; i < weight; i++) {
-                weightedWords.push(word);
-            }
-        });
-
-        const randomIndex = Math.floor(Math.random() * weightedWords.length);
-        return weightedWords[randomIndex];
-    }
-
-    function showNextWord() {
-        if (currentVocabulary.length === 0) {
-            wordToTranslateEl.textContent = 'Fim do treino!';
-            answerInput.style.display = 'none';
-            checkButton.style.display = 'none';
-            return;
-        }
-        currentWord = getRandomWord();
-        if (currentWord) {
-            isAnswered = false;
-            if (selectedDirection === 'pt-en') {
-                wordToTranslateEl.textContent = currentWord.portuguese;
-                answerInput.placeholder = 'Digite sua resposta em inglês';
-            } else {
-                wordToTranslateEl.textContent = currentWord.english;
-                answerInput.placeholder = 'Digite sua resposta em português';
-            }
-            answerInput.value = '';
-            answerInput.classList.remove('correct', 'incorrect');
-            
-            answerInput.removeAttribute('disabled'); 
-            
-            checkButton.textContent = 'Verificar';
-            checkButton.classList.remove('next-button');
-            checkButton.classList.add('check-button');
-            feedbackMessageEl.textContent = '';
-            feedbackMessageEl.classList.remove('correct', 'incorrect');
-            
-            infoIcon.classList.remove('visible');
-            alternativeTranslationsBox.style.display = 'none';
-            
-            setTimeout(() => answerInput.focus(), 0);
-        }
-    }
-
-    function checkAnswer() {
-        if (isAnswered) {
-            showNextWord();
-            return;
-        }
-
-        if (!currentWord) return;
-
-        const userAnswer = answerInput.value.trim().toLowerCase();
-        let correctAnswers = [];
+    document.addEventListener('DOMContentLoaded', () => {
+        const vocabulary = [
+            { portuguese: 'noiva', english: 'bride', category: 'nouns', example: 'The bride looked beautiful in her dress.', alternatives: [{ translation: 'betrothed', example: 'The betrothed couple is planning their wedding.' }] },
+            { portuguese: 'entalhe', english: 'carving', category: 'nouns', example: 'He showed me a beautiful wood carving.' },
+            { portuguese: 'terras baixas', english: 'lowland', category: 'nouns', example: 'They live in the lowland area near the river.' },
+            { portuguese: 'babador', english: 'bib', category: 'nouns', example: 'The baby wore a bib during dinner.' },
+            { portuguese: 'traço', english: 'trace', category: 'nouns', example: 'There was no trace of him left.', alternatives: [{ translation: 'mark', example: 'The detective found a mark on the wall.' }] },
+            { portuguese: 'mancha', english: 'blemish', category: 'nouns', example: 'She was worried about a small blemish on her skin.' },
+            { portuguese: 'quantidade', english: 'amount', category: 'nouns', example: 'A large amount of money was needed for the project.' },
+            { portuguese: 'esboço', english: 'sketch', category: 'nouns', example: 'The artist made a quick sketch of the landscape.' },
+            { portuguese: 'iminente', english: 'impending', category: 'adjectives', example: 'The country was preparing for an impending storm.' },
+            { portuguese: 'apesar de', english: 'despite', category: 'prepositions', example: 'Despite the rain, we still had a great time.' },
+            { portuguese: 'corte de gastos', english: 'retrenchment', category: 'nouns', example: 'The company is undergoing a period of retrenchment.' },
+            { portuguese: 'empréstimo', english: 'loan', category: 'nouns', example: 'He took out a loan to buy a new car.' },
+            { portuguese: 'vantagem', english: 'advantage', category: 'nouns', example: 'Speaking two languages is a great advantage.' },
+            { portuguese: 'reitor', english: 'dean', category: 'nouns', example: 'The new dean of the university was announced today.' },
+            { portuguese: 'colo', english: 'lap', category: 'nouns', example: 'The cat sat on my lap.' },
+            { portuguese: 'diminuir (volume)', english: 'turn it down', category: 'phrasal-verbs', example: 'Please turn it down, the music is too loud.' },
+            { portuguese: 'recusar', english: 'turn it down', category: 'phrasal-verbs', example: 'I think I will turn it down because I do not agree with the values of the company.', alternatives: [{ translation: 'decline', example: 'He decided to decline the job offer.' }] },
+            { portuguese: 'valer a pena', english: 'worth the time', category: 'expressions', example: 'Studying a new language is always worth the time.' },
+            { portuguese: 'aproveitar ao máximo', english: 'to make the most of it', category: 'expressions', example: 'You should make the most of your vacation.' },
+            { portuguese: 'ida e volta', english: 'back and forth', category: 'adverbs', example: 'We drove back and forth between the two cities.' },
+            { portuguese: 'ser questionado', english: 'to be grilled', category: 'idioms', example: 'He was grilled by reporters about his decisions.' },
+            { portuguese: 'demorou um pouco', english: 'it took a while', category: 'expressions', example: 'It took a while, but I finally finished the project.' },
+            { portuguese: 'mas pelo menos', english: 'but at least', category: 'conjunctions', example: 'It was a difficult journey, but at least we made it safely.' },
+            { portuguese: 'ansioso', english: 'eager', category: 'adjectives', example: 'She was eager to start her new job.' },
+            { portuguese: 'ocioso', english: 'idle', category: 'adjectives', example: 'He spent the day being completely idle.' },
+            { portuguese: 'concedido', english: 'granted', category: 'verbs', example: 'The judge granted him bail.' },
+            { portuguese: 'dar como certo', english: 'take for granted', category: 'idioms', example: 'He took her help for granted.' },
+            { portuguese: 'padronizado', english: 'standardized', category: 'adjectives', example: 'The test was standardized across all schools.' },
+            { portuguese: 'apenas', english: 'merely', category: 'adverbs', example: 'He was merely asking a question.' },
+            { portuguese: 'ultimamente', english: 'lately', category: 'adverbs', example: 'I haven\'t seen him lately.' },
+            { portuguese: 'menos', english: 'fewer', category: 'determiners', example: 'There are fewer books on the shelf now.', alternatives: [{ translation: 'least', example: 'This box has the least items of all.' }] },
+            { portuguese: 'prontamente', english: 'readily', category: 'adverbs', example: 'He readily agreed to help with the project.' },
+            { portuguese: 'promessa solene', english: 'pledge', category: 'nouns', example: 'They made a pledge to protect the environment.' },
+            { portuguese: 'compromisso', english: 'commitment', category: 'nouns', example: 'Marriage is a serious commitment.', alternatives: [{ translation: 'pledge', example: 'They made a pledge to protect the environment.' }] },
+            { portuguese: 'nomear', english: 'to appoint', category: 'verbs', example: 'They will appoint a new manager next week.' },
+            { portuguese: 'designar', english: 'to designate', category: 'verbs', example: 'The team will designate a new leader.' },
+            { portuguese: 'lançar', english: 'to throw', category: 'verbs', example: 'He threw the ball to his friend.' },
+            { portuguese: 'arremessar com força', english: 'to hurl', category: 'verbs', example: 'He hurled the rock into the water.', alternatives: [{ translation: 'throw hard', example: 'He threw the ball hard across the field.' }] },
+            { portuguese: 'jogar de leve', english: 'to toss', category: 'verbs', example: 'Toss me the keys, please.', alternatives: [{ translation: 'throw gently', example: 'She threw the ball gently to her friend.' }] },
+            { portuguese: 'soneca', english: 'snooze', category: 'nouns', example: 'I took a quick snooze on the couch.' },
+            { portuguese: 'quadro', english: 'board', category: 'nouns', example: 'Write the answer on the board.' },
+            { portuguese: 'embarcar', english: 'to board', category: 'verbs', example: 'We are ready to board the plane.' },
+            { portuguese: 'fornecer', english: 'to provide', category: 'verbs', example: 'We will provide all the necessary materials.', alternatives: [{ translation: 'provide', example: 'The school provides lunch for the students.' }] },
+            { portuguese: 'reunir', english: 'to gather', category: 'verbs', example: 'We will gather all the information we need.', alternatives: [{ translation: 'collect', example: 'Please collect the papers from the students.' }] },
+            { portuguese: 'encantar', english: 'to enchant', category: 'verbs', example: 'The music will enchant the audience.', alternatives: [{ translation: 'enchant', example: 'The story enchanted all the children.' }] }
+        ];
         
-        if (selectedDirection === 'pt-en') {
-            correctAnswers.push(currentWord.english.toLowerCase());
-            if (currentWord.alternatives) {
-                currentWord.alternatives.forEach(alt => correctAnswers.push(alt.translation.toLowerCase()));
-            }
-        } else {
-            correctAnswers.push(currentWord.portuguese.toLowerCase());
-        }
+        const progress = new Map();
+        vocabulary.forEach(word => progress.set(word.portuguese, { correct: 0, incorrect: 0, lastSeen: 0 }));
 
-        const normalizedUserAnswer = userAnswer.replace(/^(to\s)/, '');
-        const normalizedCorrectAnswers = correctAnswers.map(ans => ans.replace(/^(to\s)/, ''));
+        let currentWord;
+        let isAnswered = false;
+        let selectedCategory = 'all';
+        let selectedDirection = 'pt-en'; 
+        let currentVocabulary = [];
+        let sessionCount = 0;
+        let customWords = new Set();
 
-        const isCorrect = normalizedCorrectAnswers.includes(normalizedUserAnswer);
+        const wordToTranslateEl = document.getElementById('word-to-translate');
+        const answerInput = document.getElementById('answer-input');
+        const checkButton = document.getElementById('check-button');
+        const feedbackMessageEl = document.getElementById('feedback-message');
+        const infoIcon = document.getElementById('info-icon');
+        const alternativeTranslationsBox = document.getElementById('alternative-translations');
+        const alternativesListContent = document.getElementById('alternatives-list-content');
+        const buttonContainer = document.querySelector('.button-container');
 
-        if (isCorrect) {
-            feedbackMessageEl.textContent = 'Correto!';
-            feedbackMessageEl.classList.add('correct');
-            answerInput.classList.add('correct');
-            const wordProgress = progress.get(currentWord.portuguese) || { correct: 0, incorrect: 0 };
-            wordProgress.correct++;
-            progress.set(currentWord.portuguese, wordProgress);
-        } else {
-            feedbackMessageEl.textContent = `Incorreto. A resposta correta era: ${selectedDirection === 'pt-en' ? currentWord.english : currentWord.portuguese}`;
-            feedbackMessageEl.classList.add('incorrect');
-            answerInput.classList.add('incorrect');
-            const wordProgress = progress.get(currentWord.portuguese) || { correct: 0, incorrect: 0 };
-            wordProgress.incorrect++;
-            progress.set(currentWord.portuguese, wordProgress);
-        }
-
-        isAnswered = true;
-        answerInput.setAttribute('disabled', 'true');
-        checkButton.textContent = 'Próxima';
-        checkButton.classList.remove('check-button');
-        checkButton.classList.add('next-button');
+        const gameSelectionOverlay = document.getElementById('game-selection-overlay');
+        const gameSelectionButtonsContainer = document.getElementById('game-selection-buttons');
+        const selectGameButton = document.getElementById('select-game-button');
         
-        infoIcon.classList.add('visible');
-    }
+        const directionOverlay = document.getElementById('direction-overlay');
+        const directionButtonsContainer = document.getElementById('direction-buttons');
+        const selectDirectionButton = document.getElementById('select-direction-button');
 
-    function showAlternativeTranslations() {
-        if (!currentWord) return;
-
-        alternativesListContent.innerHTML = '';
-        const mainTranslation = selectedDirection === 'pt-en' ? currentWord.english : currentWord.portuguese;
-        const mainWord = selectedDirection === 'pt-en' ? currentWord.portuguese : currentWord.english;
-
-        const mainItem = document.createElement('p');
-        mainItem.innerHTML = `<strong>${mainWord}</strong>: ${mainTranslation}`;
-        alternativesListContent.appendChild(mainItem);
-
-        const exampleItem = document.createElement('p');
-        if (currentWord.example) {
-            exampleItem.innerHTML = `<em>Exemplo: "${currentWord.example}"</em>`;
-            alternativesListContent.appendChild(exampleItem);
+        const welcomeOverlay = document.getElementById('welcome-overlay');
+        const welcomeText = document.getElementById('welcome-text');
+        const startButton = document.getElementById('start-button');
+        const mainContentWrapper = document.getElementById('main-content-wrapper');
+        
+        const customWordsOverlay = document.getElementById('custom-words-overlay');
+        const searchInput = document.getElementById('search-input');
+        const searchResultsList = document.getElementById('search-results');
+        const selectedWordsContainer = document.getElementById('selected-words-container');
+        const startCustomGameButton = document.getElementById('start-custom-game-button');
+        const dictionaryButton = document.getElementById('dictionary-button');
+        
+        function filterVocabulary(category) {
+            if (category === 'all') {
+                return vocabulary;
+            }
+            if (category === 'custom-words') {
+                return vocabulary.filter(word => customWords.has(word.portuguese));
+            }
+            return vocabulary.filter(word => word.category === category);
         }
 
-        if (currentWord.alternatives && currentWord.alternatives.length > 0) {
-            const alternativeHeader = document.createElement('p');
-            alternativeHeader.innerHTML = '<strong>Outras traduções:</strong>';
-            alternativesListContent.appendChild(alternativeHeader);
+        function getRandomWord() {
+            sessionCount++;
             
-            currentWord.alternatives.forEach(alt => {
-                const altItem = document.createElement('p');
-                altItem.classList.add('translation-item');
-                altItem.innerHTML = `<strong>${alt.translation}</strong>`;
-                if (alt.example) {
-                    altItem.innerHTML += ` <br><em>Exemplo: "${alt.example}"</em>`;
+            // Primeiro, tentamos selecionar palavras com maior taxa de erro
+            const wordsWithErrors = currentVocabulary.filter(word => {
+                const wordProgress = progress.get(word.portuguese);
+                return wordProgress.incorrect > 0 && 
+                       (wordProgress.correct === 0 || wordProgress.incorrect / (wordProgress.correct + wordProgress.incorrect) > 0.5);
+            });
+            
+            if (wordsWithErrors.length > 0 && (sessionCount % 3 !== 0)) {
+                // 2/3 das vezes, selecionamos das palavras com erros
+                const randomIndex = Math.floor(Math.random() * wordsWithErrors.length);
+                return wordsWithErrors[randomIndex];
+            }
+            
+            // O restante do tempo, usamos o sistema de pesos
+            const weightedWords = [];
+            currentVocabulary.forEach(word => {
+                const wordProgress = progress.get(word.portuguese) || { correct: 0, incorrect: 0, lastSeen: 0 };
+                
+                // Peso baseado em erros vs acertos
+                let weight = Math.max(1, (wordProgress.incorrect + 1) * 3 - wordProgress.correct);
+                
+                // Aumenta o peso se a palavra não foi vista há muito tempo
+                const sessionsSinceLastSeen = sessionCount - wordProgress.lastSeen;
+                if (sessionsSinceLastSeen > 10) {
+                    weight *= 2;
+                } else if (sessionsSinceLastSeen > 5) {
+                    weight *= 1.5;
                 }
-                alternativesListContent.appendChild(altItem);
+                
+                for (let i = 0; i < weight; i++) {
+                    weightedWords.push(word);
+                }
+            });
+
+            const randomIndex = Math.floor(Math.random() * weightedWords.length);
+            return weightedWords[randomIndex];
+        }
+
+        function showNextWord() {
+            if (currentVocabulary.length === 0) {
+                wordToTranslateEl.textContent = 'Fim do treino!';
+                answerInput.style.display = 'none';
+                checkButton.style.display = 'none';
+                return;
+            }
+            
+            currentWord = getRandomWord();
+            if (currentWord) {
+                isAnswered = false;
+                
+                // Atualiza o lastSeen
+                const wordProgress = progress.get(currentWord.portuguese);
+                if (wordProgress) {
+                    wordProgress.lastSeen = sessionCount;
+                    progress.set(currentWord.portuguese, wordProgress);
+                }
+                
+                if (selectedDirection === 'pt-en') {
+                    wordToTranslateEl.textContent = currentWord.portuguese;
+                    answerInput.placeholder = 'Digite sua resposta em inglês';
+                } else {
+                    wordToTranslateEl.textContent = currentWord.english;
+                    answerInput.placeholder = 'Digite sua resposta em português';
+                }
+                
+                answerInput.value = '';
+                answerInput.classList.remove('correct', 'incorrect');
+                answerInput.removeAttribute('disabled'); 
+                
+                checkButton.textContent = 'Verificar';
+                checkButton.classList.remove('next-button');
+                checkButton.classList.add('check-button');
+                feedbackMessageEl.textContent = '';
+                feedbackMessageEl.classList.remove('correct', 'incorrect');
+                
+                infoIcon.classList.remove('visible');
+                alternativeTranslationsBox.style.display = 'none';
+                
+                setTimeout(() => answerInput.focus(), 0);
+            }
+        }
+
+        function calculateSimilarity(str1, str2) {
+            // Remove "to " do início das strings para comparação
+            const cleanStr1 = str1.replace(/^(to\s)/, '').toLowerCase();
+            const cleanStr2 = str2.replace(/^(to\s)/, '').toLowerCase();
+            
+            if (cleanStr1 === cleanStr2) return 1.0;
+            
+            const len1 = cleanStr1.length;
+            const len2 = cleanStr2.length;
+            const maxLen = Math.max(len1, len2);
+            
+            // Calcula a distância de Levenshtein
+            const matrix = [];
+            for (let i = 0; i <= len1; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= len2; j++) {
+                matrix[0][j] = j;
+            }
+            
+            for (let i = 1; i <= len1; i++) {
+                for (let j = 1; j <= len2; j++) {
+                    const cost = cleanStr1[i-1] === cleanStr2[j-1] ? 0 : 1;
+                    matrix[i][j] = Math.min(
+                        matrix[i-1][j] + 1,    // deleção
+                        matrix[i][j-1] + 1,     // inserção
+                        matrix[i-1][j-1] + cost // substituição
+                    );
+                }
+            }
+            
+            const distance = matrix[len1][len2];
+            return 1 - (distance / maxLen);
+        }
+
+        function checkAnswer() {
+            if (isAnswered) {
+                showNextWord();
+                return;
+            }
+
+            if (!currentWord) return;
+
+            const userAnswer = answerInput.value.trim();
+            let correctAnswers = [];
+            
+            if (selectedDirection === 'pt-en') {
+                correctAnswers.push(currentWord.english);
+                if (currentWord.alternatives) {
+                    currentWord.alternatives.forEach(alt => correctAnswers.push(alt.translation));
+                }
+            } else {
+                correctAnswers.push(currentWord.portuguese);
+            }
+
+            // Verifica similaridade para cada resposta correta
+            let maxSimilarity = 0;
+            let bestMatch = '';
+            
+            correctAnswers.forEach(correctAnswer => {
+                const similarity = calculateSimilarity(userAnswer, correctAnswer);
+                if (similarity > maxSimilarity) {
+                    maxSimilarity = similarity;
+                    bestMatch = correctAnswer;
+                }
+            });
+
+            const isCorrect = maxSimilarity >= 0.8; // 80% de similaridade
+
+            if (isCorrect) {
+                feedbackMessageEl.textContent = 'Correto!';
+                if (maxSimilarity < 1.0) {
+                    feedbackMessageEl.textContent += ` (Você digitou "${userAnswer}", mas a resposta exata é "${bestMatch}")`;
+                }
+                feedbackMessageEl.classList.add('correct');
+                answerInput.classList.add('correct');
+                const wordProgress = progress.get(currentWord.portuguese) || { correct: 0, incorrect: 0, lastSeen: 0 };
+                wordProgress.correct++;
+                progress.set(currentWord.portuguese, wordProgress);
+            } else {
+                feedbackMessageEl.textContent = `Incorreto. A resposta correta era: ${bestMatch}`;
+                feedbackMessageEl.classList.add('incorrect');
+                answerInput.classList.add('incorrect');
+                const wordProgress = progress.get(currentWord.portuguese) || { correct: 0, incorrect: 0, lastSeen: 0 };
+                wordProgress.incorrect++;
+                progress.set(currentWord.portuguese, wordProgress);
+            }
+
+            isAnswered = true;
+            answerInput.setAttribute('disabled', 'true');
+            checkButton.textContent = 'Próxima';
+            checkButton.classList.remove('check-button');
+            checkButton.classList.add('next-button');
+            
+            infoIcon.classList.add('visible');
+        }
+
+        function showAlternativeTranslations() {
+            if (!currentWord) return;
+
+            alternativesListContent.innerHTML = '';
+            const mainTranslation = selectedDirection === 'pt-en' ? currentWord.english : currentWord.portuguese;
+            const mainWord = selectedDirection === 'pt-en' ? currentWord.portuguese : currentWord.english;
+
+            const mainItem = document.createElement('p');
+            mainItem.innerHTML = `<strong>${mainWord}</strong>: ${mainTranslation}`;
+            alternativesListContent.appendChild(mainItem);
+
+            const exampleItem = document.createElement('p');
+            if (currentWord.example) {
+                exampleItem.innerHTML = `<em>Exemplo: "${currentWord.example}"</em>`;
+                alternativesListContent.appendChild(exampleItem);
+            }
+
+            if (currentWord.alternatives && currentWord.alternatives.length > 0) {
+                const alternativeHeader = document.createElement('p');
+                alternativeHeader.innerHTML = '<strong>Outras traduções:</strong>';
+                alternativesListContent.appendChild(alternativeHeader);
+                
+                currentWord.alternatives.forEach(alt => {
+                    const altItem = document.createElement('p');
+                    altItem.classList.add('translation-item');
+                    altItem.innerHTML = `<strong>${alt.translation}</strong>`;
+                    if (alt.example) {
+                        altItem.innerHTML += ` <br><em>Exemplo: "${alt.example}"</em>`;
+                    }
+                    alternativesListContent.appendChild(altItem);
+                });
+            }
+            alternativeTranslationsBox.style.display = 'block';
+        }
+
+        function hideAlternativeTranslations() {
+            alternativeTranslationsBox.style.display = 'none';
+        }
+        
+        function showDirectionOverlay() {
+            gameSelectionOverlay.style.display = 'none';
+            directionOverlay.style.display = 'flex';
+        }
+
+        function showWelcomeOverlay() {
+            directionOverlay.style.display = 'none';
+            
+            let introText = "Seu objetivo é traduzir as palavras do português para o inglês.";
+            if (selectedDirection === 'en-pt') {
+                introText = "Seu objetivo é traduzir as palavras do inglês para o português.";
+            }
+            welcomeText.textContent = introText;
+            
+            welcomeOverlay.style.display = 'flex';
+        }
+
+        function startGame() {
+            welcomeOverlay.style.display = 'none';
+            mainContentWrapper.style.opacity = '1';
+            mainContentWrapper.style.visibility = 'visible';
+            
+            currentVocabulary = filterVocabulary(selectedCategory);
+            if (currentVocabulary.length > 0) {
+                showNextWord();
+            } else {
+                wordToTranslateEl.textContent = 'Nenhuma palavra para este treino.';
+                answerInput.style.display = 'none';
+                checkButton.style.display = 'none';
+            }
+        }
+
+        function showCustomWordsMenu() {
+            gameSelectionOverlay.style.display = 'none';
+            customWordsOverlay.style.display = 'flex';
+            renderSelectedWords();
+        }
+        
+        function renderSelectedWords() {
+            selectedWordsContainer.innerHTML = '';
+            if (customWords.size === 0) {
+                selectedWordsContainer.innerHTML = '<p class="custom-words-notice">Nenhuma palavra selecionada. Use a busca para adicionar.</p>';
+                startCustomGameButton.disabled = true;
+                return;
+            }
+            
+            startCustomGameButton.disabled = false;
+            
+            const sortedWords = Array.from(customWords).sort();
+
+            sortedWords.forEach(portugueseWord => {
+                const word = vocabulary.find(w => w.portuguese === portugueseWord);
+                if (word) {
+                    const item = document.createElement('div');
+                    item.classList.add('selected-word-item');
+                    item.innerHTML = `
+                        <span>${word.portuguese} (${word.english})</span>
+                        <button class="action-button remove-button" data-portuguese="${word.portuguese}">x</button>
+                    `;
+                    selectedWordsContainer.appendChild(item);
+                }
+            });
+            
+            document.querySelectorAll('.remove-button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const wordToRemove = event.target.dataset.portuguese;
+                    customWords.delete(wordToRemove);
+                    renderSelectedWords();
+                });
             });
         }
-        alternativeTranslationsBox.style.display = 'block';
-    }
 
-    function hideAlternativeTranslations() {
-        alternativeTranslationsBox.style.display = 'none';
-    }
-    
-    function showDirectionOverlay() {
-        gameSelectionOverlay.style.display = 'none';
-        directionOverlay.style.display = 'flex';
-    }
-
-    function showWelcomeOverlay() {
-        directionOverlay.style.display = 'none';
+        // Event Listeners
+        checkButton.addEventListener('click', checkAnswer);
         
-        let introText = "Seu objetivo é traduzir as palavras do português para o inglês.";
-        if (selectedDirection === 'en-pt') {
-            introText = "Seu objetivo é traduzir as palavras do inglês para o português.";
-        }
-        welcomeText.textContent = introText;
-        
-        welcomeOverlay.style.display = 'flex';
-    }
-
-    function startGame() {
-        welcomeOverlay.style.display = 'none';
-        mainContentWrapper.style.opacity = '1';
-        mainContentWrapper.style.visibility = 'visible';
-        
-        currentVocabulary = filterVocabulary(selectedCategory);
-        if (currentVocabulary.length > 0) {
-            showNextWord();
-        } else {
-            wordToTranslateEl.textContent = 'Nenhuma palavra para este treino.';
-            answerInput.style.display = 'none';
-            checkButton.style.display = 'none';
-        }
-    }
-
-    function showCustomWordsMenu() {
-        gameSelectionOverlay.style.display = 'none';
-        customWordsOverlay.style.display = 'flex';
-        renderSelectedWords();
-    }
-    
-    function renderSelectedWords() {
-        selectedWordsContainer.innerHTML = '';
-        if (customWords.size === 0) {
-            selectedWordsContainer.innerHTML = '<p class="custom-words-notice">Nenhuma palavra selecionada. Use a busca para adicionar.</p>';
-            startCustomGameButton.disabled = true;
-            return;
-        }
-        
-        startCustomGameButton.disabled = false;
-        
-        const sortedWords = Array.from(customWords).sort();
-
-        sortedWords.forEach(portugueseWord => {
-            const word = vocabulary.find(w => w.portuguese === portugueseWord);
-            if (word) {
-                const item = document.createElement('div');
-                item.classList.add('selected-word-item');
-                item.innerHTML = `
-                    <span>${word.portuguese} (${word.english})</span>
-                    <button class="action-button remove-button" data-portuguese="${word.portuguese}">x</button>
-                `;
-                selectedWordsContainer.appendChild(item);
+        // Aceita Enter para verificar a resposta
+        answerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                checkAnswer();
             }
         });
-        
-        document.querySelectorAll('.remove-button').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const wordToRemove = event.target.dataset.portuguese;
-                customWords.delete(wordToRemove);
-                renderSelectedWords();
-            });
+
+        // Aceita Espaço para próxima pergunta quando já respondida
+        document.addEventListener('keydown', (event) => {
+            if (isAnswered && event.key === ' ') {
+                event.preventDefault();
+                showNextWord();
+            }
         });
-    }
 
-    // Eventos
-    checkButton.addEventListener('click', checkAnswer);
-    answerInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            checkAnswer();
-        }
-    });
-
-    // Toggle de traduções alternativas com o ícone 'i' e a tecla '/'
-    infoIcon.addEventListener('click', () => {
-        if (alternativeTranslationsBox.style.display === 'block') {
-            hideAlternativeTranslations();
-        } else {
-            showAlternativeTranslations();
-        }
-    });
-
-    document.addEventListener('keydown', (event) => {
-        if (event.key === '/' && isAnswered) {
-            event.preventDefault();
+        // Toggle de traduções alternativas com o ícone 'i' e a tecla '/'
+        infoIcon.addEventListener('click', () => {
             if (alternativeTranslationsBox.style.display === 'block') {
                 hideAlternativeTranslations();
             } else {
                 showAlternativeTranslations();
             }
-        }
-    });
-    
-    gameSelectionButtonsContainer.addEventListener('click', (event) => {
-        const target = event.target;
-        if (target.tagName === 'BUTTON' && target.id !== 'dictionary-button') {
-            document.querySelector('#game-selection-buttons button.selected')?.classList.remove('selected');
-            target.classList.add('selected');
-            selectedCategory = target.dataset.category;
-            
-            if (selectedCategory === 'custom-words') {
-                selectGameButton.textContent = 'Selecionar Palavras';
-            } else {
-                selectGameButton.textContent = 'Próximo';
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === '/' && isAnswered) {
+                event.preventDefault();
+                if (alternativeTranslationsBox.style.display === 'block') {
+                    hideAlternativeTranslations();
+                } else {
+                    showAlternativeTranslations();
+                }
             }
-        }
-    });
-
-    // Novo evento para o botão do dicionário
-    dictionaryButton.addEventListener('click', () => {
-        window.location.href = 'dicionario01.html'; 
-    });
-
-    selectGameButton.addEventListener('click', () => {
-        if (selectedCategory === 'custom-words') {
-            showCustomWordsMenu();
-        } else {
-            showDirectionOverlay();
-        }
-    });
-    
-    directionButtonsContainer.addEventListener('click', (event) => {
-        const target = event.target;
-        if (target.tagName === 'BUTTON') {
-            document.querySelector('#direction-buttons button.selected')?.classList.remove('selected');
-            target.classList.add('selected');
-            selectedDirection = target.dataset.direction;
-        }
-    });
-
-    selectDirectionButton.addEventListener('click', showWelcomeOverlay);
-    
-    startButton.addEventListener('click', startGame);
-
-    searchInput.addEventListener('input', (event) => {
-        const query = event.target.value.toLowerCase().trim();
-        searchResultsList.innerHTML = '';
-        searchResultsList.style.display = 'none';
-
-        if (query.length > 1) {
-            const results = vocabulary.filter(word => 
-                word.portuguese.toLowerCase().includes(query) || 
-                word.english.toLowerCase().includes(query)
-            );
-            
-            if (results.length > 0) {
-                searchResultsList.style.display = 'block';
-                results.forEach(word => {
-                    const listItem = document.createElement('li');
-                    listItem.classList.add('search-item');
-                    listItem.innerHTML = `
-                        <div class="word-info">
-                            <strong>${word.portuguese}</strong>
-                            <em>${word.english}</em>
-                        </div>
-                        <button class="action-button add-button" data-portuguese="${word.portuguese}">+</button>
-                    `;
-                    searchResultsList.appendChild(listItem);
-                });
+        });
+        
+        gameSelectionButtonsContainer.addEventListener('click', (event) => {
+            const target = event.target;
+            if (target.tagName === 'BUTTON' && target.id !== 'dictionary-button') {
+                document.querySelector('#game-selection-buttons button.selected')?.classList.remove('selected');
+                target.classList.add('selected');
+                selectedCategory = target.dataset.category;
                 
-                document.querySelectorAll('.add-button').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        const wordToAdd = event.target.dataset.portuguese;
-                        customWords.add(wordToAdd);
-                        renderSelectedWords();
-                        searchInput.value = '';
-                        searchResultsList.style.display = 'none';
-                    });
-                });
+                if (selectedCategory === 'custom-words') {
+                    selectGameButton.textContent = 'Selecionar Palavras';
+                } else {
+                    selectGameButton.textContent = 'Próximo';
+                }
             }
-        }
-    });
+        });
 
-    startCustomGameButton.addEventListener('click', () => {
-        customWordsOverlay.style.display = 'none';
-        showDirectionOverlay();
-    });
-});
-    </script>
+        dictionaryButton.addEventListener('click', () => {
+            window.location.href = 'dicionario01.html'; 
+        });
 
-</body>
+        selectGameButton.addEventListener('click', () => {
+            if (selectedCategory === 'custom-words') {
+                showCustomWordsMenu();
+            } else {
+                showDirectionOverlay();
+            }
+        });
+        
+        directionButtonsContainer.addEventListener('click', (event) => {
+            const target = event.target;
+            if (target.tagName === 'BUTTON') {
+                document.querySelector('#direction-buttons button.selected')?.classList.remove('selected');
+                target.classList.add('selected');
+                selectedDirection = target.dataset.direction;
+            }
+        });
+
+        selectDirectionButton.addEventListener('click', showWelcomeOverlay);
+        
+        startButton.addEventListener('click', startGame);
+
+        searchInput.addEventListener('input', (event) => {
+            const query = event.target.value.toLowerCase().trim();
+            searchResultsList.innerHTML = '';
+            searchResultsList.style.display = 'none';
+
+            if (query.length > 1) {
+                const results = vocabulary.filter(word => 
+                    word.portuguese.toLowerCase().includes(query) || 
+                    word.english.toLowerCase().includes(query)
+                );
+                
+                if (results.length > 0) {
+                    searchResultsList.style.display = 'block';
+                    results.forEach(word => {
+                        const listItem = document.createElement('li');
+                        listItem.classList.add('search-item');
+                        listItem.innerHTML = `
+                            <div class="word-info">
+                                <strong>${word.portuguese}</strong>
+                                <em>${word.english}</em>
+                            </div>
+                            <button class="action-button add-button" data-portuguese="${word.portuguese}">+</button>
+                        `;
+                        searchResultsList.appendChild(listItem);
+                    });
+                    
+                    document.querySelectorAll('.add-button').forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            const wordToAdd = event.target.dataset.portuguese;
+                            customWords.add(wordToAdd);
+                            renderSelectedWords();
+                            searchInput.value = '';
+                            searchResultsList.style.display = 'none';
+                        });
+                    });
+                }
+            }
+        });
+
+        startCustomGameButton.addEventListener('click', () => {
+            customWordsOverlay.style.display = 'none';
+            showDirectionOverlay();
+        });
+    });
+</script>
 </html>
