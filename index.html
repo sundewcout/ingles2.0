@@ -412,6 +412,8 @@
                     <div class="progress-bar-container">
                         <div id="progress-bar" class="progress-bar"></div>
                     </div>
+                    <div id="timer" style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">00:00</div>
+
                     
                     <div class="question-box">
                         <p>Traduza a palavra:</p>
@@ -434,7 +436,7 @@
     </div>
 
     <script>
-      /* JavaScript */
+     /* JavaScript */
 const englishWordInput = document.getElementById('english-word');
 const portugueseWordInput = document.getElementById('portuguese-word');
 const addBtn = document.getElementById('add-btn');
@@ -452,11 +454,15 @@ const progressBar = document.getElementById('progress-bar');
 const questionTitle = document.getElementById('question-title');
 const wordListContainer = document.getElementById('word-list-container');
 const wordListElement = document.getElementById('word-list');
+const timerElement = document.getElementById('timer');
 
 let dictionary = [];
 let currentWord = null;
 let wordsAnswered = 0;
 const totalWords = 10;
+let difficultWords = {};
+let startTime;
+let timerInterval;
 
 // Função para remover acentos e converter para minúsculas
 function normalizeString(str) {
@@ -515,7 +521,6 @@ function loadDictionary() {
             wordListContainer.classList.remove('hidden');
         }
     }
-    // Adiciona uma pequena transição para a tela inicial aparecer suavemente
     document.querySelector('.main-content-wrapper').style.opacity = '1';
     document.querySelector('.main-content-wrapper').style.visibility = 'visible';
     renderWordList();
@@ -540,11 +545,10 @@ function renderWordList() {
         startGameBtn.classList.add('hidden');
     }
 
-    // Adiciona o evento de clique para os botões de remover
     document.querySelectorAll('.remove-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const indexToRemove = e.target.dataset.index;
-            removeWord(index);
+            removeWord(indexToRemove);
         });
     });
 }
@@ -560,6 +564,22 @@ function removeWord(index) {
 function updateProgressBar() {
     const progress = (wordsAnswered / totalWords) * 100;
     progressBar.style.width = `${progress}%`;
+}
+
+// Inicia o timer
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+// Atualiza o display do timer
+function updateTimer() {
+    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
+    const seconds = (elapsedTime % 60).toString().padStart(2, '0');
+    if (timerElement) {
+        timerElement.textContent = `${minutes}:${seconds}`;
+    }
 }
 
 // Evento de click para adicionar uma nova palavra
@@ -589,6 +609,8 @@ startGameBtn.addEventListener('click', () => {
         addWordsSection.classList.add('hidden');
         gameSection.classList.remove('hidden');
         wordsAnswered = 0;
+        difficultWords = {};
+        startTimer();
         nextQuestion();
     }
 });
@@ -596,12 +618,10 @@ startGameBtn.addEventListener('click', () => {
 // Função para selecionar e exibir a próxima pergunta
 function nextQuestion() {
     if (wordsAnswered >= totalWords) {
-        alert('Parabéns! Você completou o jogo!');
-        location.reload(); // Recarrega a página para reiniciar
+        endGame();
         return;
     }
 
-    // Limpa a tela
     resultMessageElement.textContent = '';
     userAnswerInput.value = '';
     userAnswerInput.className = 'answer-input';
@@ -610,11 +630,9 @@ function nextQuestion() {
     userAnswerInput.removeAttribute('disabled');
     userAnswerInput.focus();
 
-    // Seleciona uma palavra aleatória do dicionário
     const randomIndex = Math.floor(Math.random() * dictionary.length);
     currentWord = dictionary[randomIndex];
 
-    // Decide aleatoriamente se a tradução será de inglês para português ou vice-versa
     const direction = Math.random() < 0.5 ? 'en-pt' : 'pt-en';
 
     if (direction === 'en-pt') {
@@ -631,10 +649,49 @@ function nextQuestion() {
     updateProgressBar();
 }
 
-// Evento de click para verificar a resposta (lógica aprimorada)
+// Função para finalizar o jogo
+function endGame() {
+    clearInterval(timerInterval);
+    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
+    const seconds = (elapsedTime % 60).toString().padStart(2, '0');
+    const finalTime = `${minutes}:${seconds}`;
+
+    gameSection.innerHTML = `
+        <div class="menu">
+            <h2>Parabéns! Você completou o jogo! 🎉</h2>
+            <p>Seu tempo total foi: <strong>${finalTime}</strong></p>
+            <h3>Palavras que você teve dificuldade:</h3>
+            <div id="difficult-words-list"></div>
+            <button id="restart-game-btn" class="start-button">Jogar Novamente</button>
+        </div>
+    `;
+
+    const difficultWordsListElement = document.getElementById('difficult-words-list');
+    const difficultWordsArray = Object.entries(difficultWords);
+
+    if (difficultWordsArray.length > 0) {
+        let listHtml = '<ul>';
+        for (const [word, count] of difficultWordsArray) {
+            const originalWord = dictionary.find(w => w.english === word || w.portuguese === word);
+            listHtml += `<li>"${originalWord.english}" (você errou ${count} vezes)</li>`;
+        }
+        listHtml += '</ul>';
+        difficultWordsListElement.innerHTML = listHtml;
+    } else {
+        difficultWordsListElement.innerHTML = `<p>Você não teve dificuldades! Excelente! 💪</p>`;
+    }
+
+    document.getElementById('restart-game-btn').addEventListener('click', () => {
+        location.reload();
+    });
+}
+
+// Evento de click para verificar a resposta
 checkAnswerBtn.addEventListener('click', () => {
     const userAnswer = userAnswerInput.value.trim();
     const correctAnswer = wordToTranslateElement.dataset.correctAnswer;
+    const wordKey = wordToTranslateElement.textContent;
 
     const normalizedUserAnswer = normalizeString(userAnswer);
     const normalizedCorrectAnswer = normalizeString(correctAnswer);
@@ -642,17 +699,21 @@ checkAnswerBtn.addEventListener('click', () => {
     let isCorrect = false;
     let message = '';
 
-    // 1. Verificação exata (ignorando acentos e maiúsculas/minúsculas)
     if (normalizedUserAnswer === normalizedCorrectAnswer) {
         isCorrect = true;
         message = 'Resposta correta! 🎉';
-    }
-    // 2. Verificação de similaridade (acima de 80%)
-    else {
+    } else {
         const similarity = getSimilarity(normalizedUserAnswer, normalizedCorrectAnswer);
         if (similarity >= 0.8) {
             isCorrect = true;
             message = `Quase lá! A resposta correta era "${correctAnswer}".`;
+        } else {
+            // Contabiliza a dificuldade
+            if (difficultWords[wordKey]) {
+                difficultWords[wordKey]++;
+            } else {
+                difficultWords[wordKey] = 1;
+            }
         }
     }
 
@@ -660,7 +721,7 @@ checkAnswerBtn.addEventListener('click', () => {
         resultMessageElement.textContent = message;
         resultMessageElement.className = 'feedback-message correct';
         userAnswerInput.classList.add('correct');
-        wordsAnswered++; // A contagem só aumenta em caso de acerto
+        wordsAnswered++;
         updateProgressBar();
     } else {
         resultMessageElement.textContent = `A resposta correta é "${correctAnswer}".`;
@@ -679,16 +740,11 @@ nextQuestionBtn.addEventListener('click', nextQuestion);
 // Novo evento de teclado no documento para capturar a tecla 'Enter'
 document.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-        // Se a seção de adicionar palavras está visível, tenta adicionar
         if (!addWordsSection.classList.contains('hidden') && englishWordInput.value && portugueseWordInput.value) {
             addBtn.click();
-        } 
-        // Se a seção do jogo está visível e o botão de "Verificar" está visível
-        else if (!gameSection.classList.contains('hidden') && !checkAnswerBtn.classList.contains('hidden') && userAnswerInput.value) {
+        } else if (!gameSection.classList.contains('hidden') && !checkAnswerBtn.classList.contains('hidden') && userAnswerInput.value) {
             checkAnswerBtn.click();
-        } 
-        // Se a seção do jogo está visível e o botão de "Próxima" está visível
-        else if (!gameSection.classList.contains('hidden') && !nextQuestionBtn.classList.contains('hidden')) {
+        } else if (!gameSection.classList.contains('hidden') && !nextQuestionBtn.classList.contains('hidden')) {
             nextQuestionBtn.click();
         }
     }
