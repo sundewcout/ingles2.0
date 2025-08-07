@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Duolingo-like</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Tradutor Duolingo-like</title>
     <style>
-        /* Estilos CSS (Versão expandida, sem box-shadow) */
+        /* CSS */
         @font-face {
             font-family: 'museo-sans-rounded';
             src: url('https://d7mj4aqfscim2.cloudfront.net/proxy/fonts/museo/museosansrounded-700-webfont.eot');
@@ -18,363 +17,88 @@
             font-style: normal;
         }
 
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: white;
-            font-family: 'museo-sans-rounded', sans-serif;
-            color: #4b4b4b;
-        }
-
-        /* --- Estrutura da nova interface (header + sidebar + main) --- */
         body {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px 20px;
-            border-bottom: 2px solid #e5e5e5;
+            font-family: 'museo-sans-rounded', sans-serif;
             background-color: white;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
+            margin: 0;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            width: 100%;
-            max-width: 1000px; /* Largura máxima para centralizar o conteúdo */
-        }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #58cc02;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
+            min-height: 100vh;
             color: #4b4b4b;
-            font-weight: 700;
-            padding: 5px 10px;
-            transition: color 0.2s;
-        }
-
-        .nav-menu a:hover {
-            color: #1cb0f6;
-        }
-
-        .main-container {
-            flex: 1; /* Ocupa o espaço restante */
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .sidebar {
-            width: 80px;
-            background-color: #f7f7f7;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            border-right: 2px solid #e5e5e5;
-        }
-
-        .sidebar-item {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            color: #a5a5a5;
-        }
-        
-        .sidebar-item:hover, .sidebar-item.active {
-            background-color: #e5e5e5;
-        }
-
-        .sidebar-item.active {
-            color: #58cc02;
         }
 
         .main-content-wrapper {
             width: 100%;
-            height: 100%;
+            height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 20px;
-            overflow-y: auto;
-            box-sizing: border-box;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .container {
+            position: relative;
             width: 100%;
             max-width: 600px;
+            background-color: transparent;
+            padding: 20px;
             text-align: center;
         }
 
-        /* --- Estilos do card (sem sombra e com novo design) --- */
-        .card {
-            background-color: white;
-            border-radius: 0; /* Removendo o border-radius */
-            padding: 0; /* Removendo o padding do card, o conteúdo terá padding */
-            margin-bottom: 0;
+        .content-flex-container {
+            display: block;
         }
 
-        .card-content {
-            padding: 20px;
-            border-bottom: 2px solid #e5e5e5;
-        }
-        
-        .card-content:last-child {
-            border-bottom: none;
-        }
-        
-        .button {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background-color: #58cc02;
-        }
-        
-        .button:hover {
-            background-color: #5de604;
-        }
-        
-        .button:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #4bb302;
-        }
-
-        .button.blue {
-            background-color: #1cb0f6;
-            box-shadow: 0 4px 0 #1898e0;
-        }
-
-        .button.blue:hover {
-            background-color: #20b6ff;
-        }
-        
-        .button.blue:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #1898e0;
-        }
-
-        .hidden {
-            display: none;
-        }
-        
-        .feedback-message {
-            margin-top: 10px;
-            min-height: 20px;
-            font-weight: bold;
-        }
-
-        .feedback-message.correct {
-            color: #58cc02;
-        }
-
-        .feedback-message.incorrect {
-            color: #ff4b4b;
-        }
-
-        /* --- Estilos da Dashboard (com novas seções) --- */
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .user-info {
+        .header {
             display: flex;
             align-items: center;
-        }
-        
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: #1cb0f6;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
             justify-content: center;
-            align-items: center;
-            margin-right: 15px;
+            margin-bottom: 30px;
         }
 
-        .user-name {
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .stats-bar {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .stat-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 5px;
-        }
-        
-        .stat-icon.hearts {
-            color: #ff4b4b;
-        }
-
-        .stat-icon.gems {
-            color: #7d449e;
-        }
-
-        .stat-icon.fire {
-            color: #ff9600;
-        }
-        
-        .lesson-card {
-            display: flex;
-            align-items: center;
-            text-align: left;
-            padding: 15px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            border-bottom: 2px solid #e5e5e5;
-        }
-        
-        .lesson-card:last-child {
-            border-bottom: none;
-        }
-
-        .lesson-card:hover {
-            background-color: #f7f7f7;
-        }
-        
-        .lesson-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: #d7ffb8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            margin-right: 15px;
-        }
-
-        .lesson-icon.quiz {
-            background-color: #cce5ff;
-        }
-
-        .lesson-details h3 {
-            margin: 0;
-            font-size: 18px;
-            color: #2d2d2d;
-        }
-        
-        .lesson-details p {
-            margin: 5px 0 0;
-            font-size: 14px;
-            color: #666;
-        }
-        
-        .challenge-card, .leaderboard-card {
-            padding: 20px;
-            border-bottom: 2px solid #e5e5e5;
-        }
-        
-        .challenge-card h3, .leaderboard-card h3 {
-            margin-top: 0;
-        }
-        
-        .leaderboard-list {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #e5e5e5;
-        }
-        
-        .leaderboard-item:last-child {
-            border-bottom: none;
-        }
-        
-        .leaderboard-item img {
+        .logo {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        
-        .player-info {
-            display: flex;
-            align-items: center;
-        }
-        
-        .player-name {
-            font-weight: 700;
+            margin-right: 12px;
         }
 
-        /* --- Estilos do Jogo de Tradução (Sem alteração) --- */
+        .header h1 {
+            font-size: 24px;
+            color: #2d2d2d;
+            font-weight: 600;
+            margin: 0;
+        }
+
         .question-box {
             padding: 30px 20px;
             background-color: white;
             margin-bottom: 20px;
             flex: 1;
         }
-        
+
         .word-to-translate {
             font-size: 32px;
             color: #2d2d2d;
             margin: 20px 0 10px;
             font-weight: 600;
         }
-        
+
+        .word-and-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0 10px;
+        }
+
         .answer-input-container {
             position: relative;
             margin-top: 16px;
         }
-        
+
         .answer-input {
             width: 100%;
             padding: 14px;
@@ -390,7 +114,7 @@
             font-weight: 700;
             background-color: #fff;
         }
-        
+
         .answer-input:focus {
             outline: none;
             border-color: #e5e5e5;
@@ -403,7 +127,14 @@
             background-color: #f7f7f7;
             color: #a5a5a5;
         }
-        
+
+        .answer-input::placeholder {
+            color: #666 !important;
+            font-family: 'museo-sans-rounded', sans-serif !important;
+            font-weight: 700;
+            opacity: 1;
+        }
+
         .answer-input.correct {
             border-color: #58cc02;
             border-bottom-color: #4bb302;
@@ -417,13 +148,77 @@
             background-color: #ffdde0;
             color: #ff4b4b;
         }
-        
+
+        .feedback-message {
+            margin-top: 10px;
+            min-height: 20px;
+            font-weight: bold;
+        }
+
+        .feedback-message.correct {
+            color: #58cc02;
+        }
+
+        .feedback-message.incorrect {
+            color: #ff4b4b;
+        }
+
         .button-container {
             display: flex;
             justify-content: center;
             margin-top: 16px;
         }
-        
+
+        .check-button {
+            width: 50%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background-color: #58cc02;
+            box-shadow: 0 4px 0 #4bb302;
+        }
+
+        .check-button:hover {
+            background-color: #5de604;
+        }
+
+        .check-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #4bb302;
+        }
+
+        .next-button {
+            width: 50%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background-color: #1cb0f6;
+            box-shadow: 0 4px 0 #1898e0;
+        }
+
+        .next-button:hover {
+            background-color: #20b6ff;
+        }
+
+        .next-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1898e0;
+        }
+
         .progress-bar-container {
             width: 100%;
             height: 12px;
@@ -439,14 +234,66 @@
             background: linear-gradient(to right, #58cc02, #5de604);
             transition: width 0.4s ease-in-out;
         }
-        
+
+        .menu {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .menu h2 {
+            font-size: 24px;
+            color: #2d2d2d;
+            margin-top: 0;
+        }
+
+        .menu p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .start-button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background-color: #58cc02;
+            box-shadow: 0 4px 0 #4bb302;
+        }
+
+        .start-button:hover {
+            background-color: #5de604;
+        }
+
+        .start-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #4bb302;
+        }
+
+        .hidden {
+            display: none;
+        }
+
         .input-group {
             display: flex;
             flex-direction: column;
             gap: 10px;
             margin-bottom: 15px;
         }
-        
+
         .input-group input {
             padding: 12px;
             border: 2px solid #e5e5e5;
@@ -463,16 +310,17 @@
             max-height: 200px;
             overflow-y: auto;
             border: 1px solid #e5e5e5;
+            border-radius: 12px;
             padding: 10px;
             background-color: #f9f9f9;
         }
-        
+
         #word-list {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
-        
+
         .word-item {
             display: flex;
             justify-content: space-between;
@@ -480,615 +328,430 @@
             padding: 8px 0;
             border-bottom: 1px solid #e5e5e5;
         }
-        
+
         .word-item:last-child {
             border-bottom: none;
         }
-        
+
         .word-pair {
             font-size: 16px;
             font-weight: 600;
             color: #4b4b4b;
         }
-        
+
         .remove-btn {
-            background-color: #ff4b4b;
+            background-color: #ff4b4b; /* Fundo vermelho */
             border: 2px solid #ff4b4b;
-            border-bottom: 5px solid #e04343;
-            color: white;
+            border-bottom: 5px solid #e04343; /* Borda inferior mais escura */
+            color: white; /* Letra branca */
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             width: 28px;
             height: 28px;
-            border-radius: 8px;
+            border-radius: 8px; /* Borda arredondada */
             display: flex;
             justify-content: center;
             align-items: center;
             transition: all 0.2s;
         }
-        
+
         .remove-btn:hover {
             background-color: #ff6a6a;
             border-color: #ff6a6a;
-            box-shadow: 0 3px 0 #e04343;
+            box-shadow: 0 3px 0 #e04343; /* Sombra sutil para o hover */
         }
-        
+
         .remove-btn:active {
             transform: translateY(2px);
             box-shadow: 0 1px 0 #e04343;
         }
         
-        /* Responsividade */
-        @media (max-width: 800px) {
-            .sidebar {
-                display: none;
-            }
-            .header-content {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .nav-menu {
-                justify-content: center;
-            }
-        }
-
+        /* Responsividade para telas menores */
         @media (max-width: 600px) {
-            .button {
+            .check-button, .next-button {
                 width: 100%;
+            }
+            .button-container {
+                display: block;
             }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <span class="logo">Duolingo-cópia</span>
-            <div class="nav-menu">
-                <a href="#">Aprender</a>
-                <a href="#">Rankings</a>
-                <a href="#">Loja</a>
-            </div>
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <span class="stat-icon fire"><i class="fas fa-fire"></i></span>
-                    <span id="streak-count">14</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon gems"><i class="fas fa-gem"></i></span>
-                    <span id="gems-count">50</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon hearts"><i class="fas fa-heart"></i></span>
-                    <span id="hearts-count">5</span>
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <div class="main-container">
-        <aside class="sidebar">
-            <div class="sidebar-item active" data-section="dashboard-section"><i class="fas fa-home"></i></div>
-            <div class="sidebar-item" data-section="add-words-section"><i class="fas fa-plus-circle"></i></div>
-            <div class="sidebar-item" data-section="leaderboard-section"><i class="fas fa-trophy"></i></div>
-        </aside>
-        
-        <div class="main-content-wrapper">
-            <div class="container">
+    <div class="main-content-wrapper">
+        <div class="container">
+            <div class="content-flex-container">
                 
-                <div id="dashboard-section">
-                    <div class="card">
-                        <div class="card-content">
-                            <div class="dashboard-header">
-                                <div class="user-info">
-                                    <div class="user-avatar">J</div>
-                                    <span class="user-name">Usuário</span>
-                                </div>
-                            </div>
+                <div id="add-words-section">
+                    <div class="menu">
+                        <h2>Adicionar Palavras Personalizadas</h2>
+                        <p>Digite a palavra e sua tradução para começar seu jogo.</p>
+                        <div class="input-group">
+                            <input type="text" id="english-word" placeholder="Palavra em Inglês">
+                            <input type="text" id="portuguese-word" placeholder="Tradução em Português">
+                            <button id="add-btn" class="start-button">Adicionar</button>
                         </div>
-                        <div class="card-content">
-                            <h2>Sua Jornada</h2>
-                            <div id="lessons-list">
-                                <div class="lesson-card" id="start-game-card">
-                                    <div class="lesson-icon">📚</div>
-                                    <div class="lesson-details">
-                                        <h3>Começar Jogo de Tradução</h3>
-                                        <p>Pratique as palavras que você adicionou.</p>
-                                    </div>
-                                </div>
-                                <div class="lesson-card" id="add-words-card">
-                                    <div class="lesson-icon quiz">📝</div>
-                                    <div class="lesson-details">
-                                        <h3>Adicionar Palavras</h3>
-                                        <p>Expanda seu vocabulário com novas palavras.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-content hidden" id="difficult-words-dashboard">
-                            <h2>Palavras Difíceis</h2>
-                            <ul id="difficult-words-ul">
-                                </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="add-words-section" class="hidden">
-                    <div class="card">
-                        <div class="card-content">
-                            <h2>Adicionar Palavras Personalizadas</h2>
-                            <p>Digite a palavra e sua tradução para começar seu jogo.</p>
-                            <div class="input-group">
-                                <input type="text" id="english-word" placeholder="Palavra em Inglês">
-                                <input type="text" id="portuguese-word" placeholder="Tradução em Português">
-                                <button id="add-btn" class="button">Adicionar</button>
-                            </div>
-                            <p id="message" class="feedback-message"></p>
-                        </div>
-                        <div class="card-content hidden" id="word-list-container">
+                        <p id="message" class="feedback-message"></p>
+                        
+                        <div id="word-list-container" class="hidden">
                             <h2>Palavras no seu Jogo:</h2>
                             <ul id="word-list"></ul>
                         </div>
+                        
+                        <button id="start-game-btn" class="start-button hidden">Começar Jogo</button>
                     </div>
-                    <button id="back-to-dashboard-btn" class="button blue">Voltar</button>
                 </div>
 
                 <div id="game-section" class="hidden">
-                    <div class="card">
-                        <div class="card-content">
-                            <div class="header">
-                                <h1 id="question-title">Traduza:</h1>
-                            </div>
-                            
-                            <div class="progress-bar-container">
-                                <div id="progress-bar" class="progress-bar"></div>
-                            </div>
-                            
-                            <div id="timer" style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">00:00</div>
-                            
-                            <div class="question-box">
-                                <p>Traduza a palavra:</p>
-                                <div class="word-and-info">
-                                    <div id="word-to-translate" class="word-to-translate"></div>
-                                </div>
-                                <div class="answer-input-container">
-                                    <input type="text" id="user-answer" class="answer-input" placeholder="Digite sua tradução">
-                                </div>
-                                <div id="result-message" class="feedback-message"></div>
-                            </div>
-                            
-                            <div class="button-container">
-                                <button id="check-answer-btn" class="button">Verificar</button>
-                                <button id="next-question-btn" class="button blue hidden">Próxima</button>
-                                <button id="end-game-btn" class="button blue hidden">Sair</button>
-                            </div>
-                        </div>
+                    <div class="header">
+                        <h1 id="question-title">Traduza:</h1>
                     </div>
-                </div>
-                
-                <div id="end-game-section" class="hidden">
-                    <div class="card">
-                        <div class="card-content">
-                            <h2>Parabéns! Você completou o jogo! 🎉</h2>
-                            <p id="final-time"></p>
-                            <h3>Palavras que você teve dificuldade:</h3>
-                            <ul id="difficult-words-list"></ul>
-                            <button id="go-to-dashboard-btn" class="button blue">Voltar para a Dashboard</button>
-                        </div>
+                    
+                    <div class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar"></div>
                     </div>
-                </div>
+                    <div id="timer" style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">00:00</div>
 
-                <div id="leaderboard-section" class="hidden">
-                    <div class="card">
-                        <div class="card-content">
-                            <h2>Ranking Semanal</h2>
-                            <ul class="leaderboard-list">
-                                <li class="leaderboard-item">
-                                    <div class="player-info">
-                                        <img src="https://i.pravatar.cc/150?img=1" alt="Avatar">
-                                        <span class="player-name">Ana</span>
-                                    </div>
-                                    <span>250 XP</span>
-                                </li>
-                                <li class="leaderboard-item">
-                                    <div class="player-info">
-                                        <img src="https://i.pravatar.cc/150?img=2" alt="Avatar">
-                                        <span class="player-name">Pedro</span>
-                                    </div>
-                                    <span>210 XP</span>
-                                </li>
-                                <li class="leaderboard-item">
-                                    <div class="player-info">
-                                        <img src="https://i.pravatar.cc/150?img=3" alt="Avatar">
-                                        <span class="player-name">João</span>
-                                    </div>
-                                    <span>180 XP</span>
-                                </li>
-                            </ul>
+                    
+                    <div class="question-box">
+                        <p>Traduza a palavra:</p>
+                        <div class="word-and-info">
+                            <div id="word-to-translate" class="word-to-translate"></div>
                         </div>
-                        <div class="card-content">
-                            <button id="back-from-leaderboard-btn" class="button blue">Voltar</button>
+                        <div class="answer-input-container">
+                            <input type="text" id="user-answer" class="answer-input" placeholder="Digite sua tradução">
                         </div>
+                        <div id="result-message" class="feedback-message"></div>
+                    </div>
+
+                    <div class="button-container">
+                        <button id="check-answer-btn" class="check-button">Verificar</button>
+                        <button id="next-question-btn" class="next-button hidden">Próxima</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
-        /* JavaScript com atualizações para as novas seções */
-        const mainWrapper = document.querySelector('.main-content-wrapper');
-        const dashboardSection = document.getElementById('dashboard-section');
-        const addWordsSection = document.getElementById('add-words-section');
-        const gameSection = document.getElementById('game-section');
-        const endGameSection = document.getElementById('end-game-section');
-        const leaderboardSection = document.getElementById('leaderboard-section');
+     /* JavaScript */
+const englishWordInput = document.getElementById('english-word');
+const portugueseWordInput = document.getElementById('portuguese-word');
+const addBtn = document.getElementById('add-btn');
+const messageElement = document.getElementById('message');
+const startGameBtn = document.getElementById('start-game-btn');
 
-        const startCard = document.getElementById('start-game-card');
-        const addCard = document.getElementById('add-words-card');
-        const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
-        const goHomeBtn = document.getElementById('go-to-dashboard-btn');
-        const backFromLeaderboardBtn = document.getElementById('back-from-leaderboard-btn');
-        const sidebarItems = document.querySelectorAll('.sidebar-item');
+const addWordsSection = document.getElementById('add-words-section');
+const gameSection = document.getElementById('game-section');
+const wordToTranslateElement = document.getElementById('word-to-translate');
+const userAnswerInput = document.getElementById('user-answer');
+const checkAnswerBtn = document.getElementById('check-answer-btn');
+const resultMessageElement = document.getElementById('result-message');
+const nextQuestionBtn = document.getElementById('next-question-btn');
+const progressBar = document.getElementById('progress-bar');
+const questionTitle = document.getElementById('question-title');
+const wordListContainer = document.getElementById('word-list-container');
+const wordListElement = document.getElementById('word-list');
+const timerElement = document.getElementById('timer');
 
-        const englishWordInput = document.getElementById('english-word');
-        const portugueseWordInput = document.getElementById('portuguese-word');
-        const addBtn = document.getElementById('add-btn');
-        const messageElement = document.getElementById('message');
-        const wordListContainer = document.getElementById('word-list-container');
-        const wordListElement = document.getElementById('word-list');
-        const wordToTranslateElement = document.getElementById('word-to-translate');
-        const userAnswerInput = document.getElementById('user-answer');
-        const checkAnswerBtn = document.getElementById('check-answer-btn');
-        const resultMessageElement = document.getElementById('result-message');
-        const nextQuestionBtn = document.getElementById('next-question-btn');
-        const progressBar = document.getElementById('progress-bar');
-        const questionTitle = document.getElementById('question-title');
-        const timerElement = document.getElementById('timer');
-        const difficultWordsDashboard = document.getElementById('difficult-words-dashboard');
-        const difficultWordsUl = document.getElementById('difficult-words-ul');
-        const endQuestionBtn = document.getElementById('end-game-btn');
+let dictionary = [];
+let currentWord = null;
+let wordsAnswered = 0;
+const totalWords = 10;
+let difficultWords = {};
+let startTime;
+let timerInterval;
 
-        let dictionary = [];
-        let currentWord = null;
-        let wordsAnswered = 0;
-        const totalWords = 10;
-        let difficultWords = {};
-        let startTime;
-        let timerInterval;
+// Função para remover acentos e converter para minúsculas
+function normalizeString(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
 
-        function normalizeString(str) {
-            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-        }
+// Função para calcular a similaridade (Levenshtein Distance)
+function getSimilarity(s1, s2) {
+    const longer = s1.length > s2.length ? s1 : s2;
+    const shorter = s1.length > s2.length ? s2 : s1;
+    const longerLength = longer.length;
+    if (longerLength === 0) {
+        return 1.0;
+    }
+    return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+}
 
-        function getSimilarity(s1, s2) {
-            const longer = s1.length > s2.length ? s1 : s2;
-            const shorter = s1.length > s2.length ? s2 : s1;
-            const longerLength = longer.length;
-            if (longerLength === 0) return 1.0;
-            return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
-        }
+function editDistance(s1, s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
 
-        function editDistance(s1, s2) {
-            s1 = s1.toLowerCase();
-            s2 = s2.toLowerCase();
-            const costs = [];
-            for (let i = 0; i <= s1.length; i++) {
-                let lastValue = i;
-                for (let j = 0; j <= s2.length; j++) {
-                    if (i === 0) {
-                        costs[j] = j;
-                    } else if (j > 0) {
-                        let newValue = costs[j - 1];
-                        if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
-                            newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
-                        }
-                        costs[j - 1] = lastValue;
-                        lastValue = newValue;
-                    }
+    const costs = [];
+    for (let i = 0; i <= s1.length; i++) {
+        let lastValue = i;
+        for (let j = 0; j <= s2.length; j++) {
+            if (i === 0) {
+                costs[j] = j;
+            } else if (j > 0) {
+                let newValue = costs[j - 1];
+                if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+                    newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
                 }
-                if (i > 0) costs[s2.length] = lastValue;
+                costs[j - 1] = lastValue;
+                lastValue = newValue;
             }
-            return costs[s2.length];
         }
-
-        function saveDictionary() {
-            localStorage.setItem('dictionary', JSON.stringify(dictionary));
+        if (i > 0) {
+            costs[s2.length] = lastValue;
         }
+    }
+    return costs[s2.length];
+}
 
-        function loadDictionary() {
-            const savedDictionary = localStorage.getItem('dictionary');
-            if (savedDictionary) {
-                dictionary = JSON.parse(savedDictionary);
-            }
-            // Animação para carregar o conteúdo da tela
-            document.querySelector('.main-container').style.opacity = '1';
-            document.querySelector('.main-content-wrapper').style.opacity = '1';
-            document.querySelector('.main-content-wrapper').style.visibility = 'visible';
-            renderWordList();
-            renderDifficultWords();
+// Salva o dicionário no localStorage
+function saveDictionary() {
+    localStorage.setItem('dictionary', JSON.stringify(dictionary));
+}
+
+// Carrega o dicionário do localStorage
+function loadDictionary() {
+    const savedDictionary = localStorage.getItem('dictionary');
+    if (savedDictionary) {
+        dictionary = JSON.parse(savedDictionary);
+        if (dictionary.length > 0) {
+            startGameBtn.classList.remove('hidden');
+            wordListContainer.classList.remove('hidden');
         }
+    }
+    document.querySelector('.main-content-wrapper').style.opacity = '1';
+    document.querySelector('.main-content-wrapper').style.visibility = 'visible';
+    renderWordList();
+}
 
-        function renderWordList() {
-            wordListElement.innerHTML = '';
-            if (dictionary.length > 0) {
-                wordListContainer.classList.remove('hidden');
-                dictionary.forEach((word, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'word-item';
-                    li.innerHTML = `
-                        <span class="word-pair">${word.english} - ${word.portuguese}</span>
-                        <button class="remove-btn" data-index="${index}">X</button>
-                    `;
-                    wordListElement.appendChild(li);
-                });
+// Renderiza a lista de palavras
+function renderWordList() {
+    wordListElement.innerHTML = '';
+    if (dictionary.length > 0) {
+        wordListContainer.classList.remove('hidden');
+        dictionary.forEach((word, index) => {
+            const li = document.createElement('li');
+            li.className = 'word-item';
+            li.innerHTML = `
+                <span class="word-pair">${word.english} - ${word.portuguese}</span>
+                <button class="remove-btn" data-index="${index}">X</button>
+            `;
+            wordListElement.appendChild(li);
+        });
+    } else {
+        wordListContainer.classList.add('hidden');
+        startGameBtn.classList.add('hidden');
+    }
+
+    document.querySelectorAll('.remove-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const indexToRemove = e.target.dataset.index;
+            removeWord(indexToRemove);
+        });
+    });
+}
+
+// Remove uma palavra do dicionário
+function removeWord(index) {
+    dictionary.splice(index, 1);
+    saveDictionary();
+    renderWordList();
+}
+
+// Atualiza a barra de progresso
+function updateProgressBar() {
+    const progress = (wordsAnswered / totalWords) * 100;
+    progressBar.style.width = `${progress}%`;
+}
+
+// Inicia o timer
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+// Atualiza o display do timer
+function updateTimer() {
+    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
+    const seconds = (elapsedTime % 60).toString().padStart(2, '0');
+    if (timerElement) {
+        timerElement.textContent = `${minutes}:${seconds}`;
+    }
+}
+
+// Evento de click para adicionar uma nova palavra
+addBtn.addEventListener('click', () => {
+    const englishWord = englishWordInput.value.trim();
+    const portugueseWord = portugueseWordInput.value.trim();
+
+    if (englishWord && portugueseWord) {
+        dictionary.push({ english: englishWord, portuguese: portugueseWord });
+        englishWordInput.value = '';
+        portugueseWordInput.value = '';
+        messageElement.textContent = 'Palavra adicionada com sucesso! ✨';
+        messageElement.className = 'feedback-message correct';
+        startGameBtn.classList.remove('hidden');
+        wordListContainer.classList.remove('hidden');
+        saveDictionary();
+        renderWordList();
+    } else {
+        messageElement.textContent = 'Por favor, preencha ambos os campos. 😔';
+        messageElement.className = 'feedback-message incorrect';
+    }
+});
+
+// Evento de click para começar o jogo
+startGameBtn.addEventListener('click', () => {
+    if (dictionary.length > 0) {
+        addWordsSection.classList.add('hidden');
+        gameSection.classList.remove('hidden');
+        wordsAnswered = 0;
+        difficultWords = {};
+        startTimer();
+        nextQuestion();
+    }
+});
+
+// Função para selecionar e exibir a próxima pergunta
+function nextQuestion() {
+    if (wordsAnswered >= totalWords) {
+        endGame();
+        return;
+    }
+
+    resultMessageElement.textContent = '';
+    userAnswerInput.value = '';
+    userAnswerInput.className = 'answer-input';
+    nextQuestionBtn.classList.add('hidden');
+    checkAnswerBtn.classList.remove('hidden');
+    userAnswerInput.removeAttribute('disabled');
+    userAnswerInput.focus();
+
+    const randomIndex = Math.floor(Math.random() * dictionary.length);
+    currentWord = dictionary[randomIndex];
+
+    const direction = Math.random() < 0.5 ? 'en-pt' : 'pt-en';
+
+    if (direction === 'en-pt') {
+        wordToTranslateElement.textContent = currentWord.english;
+        wordToTranslateElement.dataset.correctAnswer = currentWord.portuguese;
+        questionTitle.textContent = 'Traduza a palavra em inglês:';
+        userAnswerInput.placeholder = 'Digite a tradução em português';
+    } else {
+        wordToTranslateElement.textContent = currentWord.portuguese;
+        wordToTranslateElement.dataset.correctAnswer = currentWord.english;
+        questionTitle.textContent = 'Traduza a palavra em português:';
+        userAnswerInput.placeholder = 'Digite a tradução em inglês';
+    }
+    updateProgressBar();
+}
+
+// Função para finalizar o jogo
+function endGame() {
+    clearInterval(timerInterval);
+    const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
+    const seconds = (elapsedTime % 60).toString().padStart(2, '0');
+    const finalTime = `${minutes}:${seconds}`;
+
+    gameSection.innerHTML = `
+        <div class="menu">
+            <h2>Parabéns! Você completou o jogo! 🎉</h2>
+            <p>Seu tempo total foi: <strong>${finalTime}</strong></p>
+            <h3>Palavras que você teve dificuldade:</h3>
+            <div id="difficult-words-list"></div>
+            <button id="restart-game-btn" class="start-button">Jogar Novamente</button>
+        </div>
+    `;
+
+    const difficultWordsListElement = document.getElementById('difficult-words-list');
+    const difficultWordsArray = Object.entries(difficultWords);
+
+    if (difficultWordsArray.length > 0) {
+        let listHtml = '<ul>';
+        for (const [word, count] of difficultWordsArray) {
+            const originalWord = dictionary.find(w => w.english === word || w.portuguese === word);
+            listHtml += `<li>"${originalWord.english}" (você errou ${count} vezes)</li>`;
+        }
+        listHtml += '</ul>';
+        difficultWordsListElement.innerHTML = listHtml;
+    } else {
+        difficultWordsListElement.innerHTML = `<p>Você não teve dificuldades! Excelente! 💪</p>`;
+    }
+
+    document.getElementById('restart-game-btn').addEventListener('click', () => {
+        location.reload();
+    });
+}
+
+// Evento de click para verificar a resposta
+checkAnswerBtn.addEventListener('click', () => {
+    const userAnswer = userAnswerInput.value.trim();
+    const correctAnswer = wordToTranslateElement.dataset.correctAnswer;
+    const wordKey = wordToTranslateElement.textContent;
+
+    const normalizedUserAnswer = normalizeString(userAnswer);
+    const normalizedCorrectAnswer = normalizeString(correctAnswer);
+
+    let isCorrect = false;
+    let message = '';
+
+    if (normalizedUserAnswer === normalizedCorrectAnswer) {
+        isCorrect = true;
+        message = 'Resposta correta! 🎉';
+    } else {
+        const similarity = getSimilarity(normalizedUserAnswer, normalizedCorrectAnswer);
+        if (similarity >= 0.8) {
+            isCorrect = true;
+            message = `Quase lá! A resposta correta era "${correctAnswer}".`;
+        } else {
+            // Contabiliza a dificuldade
+            if (difficultWords[wordKey]) {
+                difficultWords[wordKey]++;
             } else {
-                wordListContainer.classList.add('hidden');
-            }
-            document.querySelectorAll('.remove-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const indexToRemove = e.target.dataset.index;
-                    removeWord(indexToRemove);
-                });
-            });
-        }
-        
-        function renderDifficultWords() {
-            difficultWordsUl.innerHTML = '';
-            const difficultWordsArray = Object.entries(difficultWords).sort((a, b) => b[1] - a[1]);
-            
-            if (difficultWordsArray.length > 0) {
-                difficultWordsDashboard.classList.remove('hidden');
-                difficultWordsArray.forEach(([word, count]) => {
-                    const li = document.createElement('li');
-                    li.textContent = `${word} (erros: ${count})`;
-                    difficultWordsUl.appendChild(li);
-                });
-            } else {
-                difficultWordsDashboard.classList.add('hidden');
+                difficultWords[wordKey] = 1;
             }
         }
+    }
 
-        function removeWord(index) {
-            dictionary.splice(index, 1);
-            saveDictionary();
-            renderWordList();
+    if (isCorrect) {
+        resultMessageElement.textContent = message;
+        resultMessageElement.className = 'feedback-message correct';
+        userAnswerInput.classList.add('correct');
+        wordsAnswered++;
+        updateProgressBar();
+    } else {
+        resultMessageElement.textContent = `A resposta correta é "${correctAnswer}".`;
+        resultMessageElement.className = 'feedback-message incorrect';
+        userAnswerInput.classList.add('incorrect');
+    }
+
+    userAnswerInput.setAttribute('disabled', 'true');
+    checkAnswerBtn.classList.add('hidden');
+    nextQuestionBtn.classList.remove('hidden');
+});
+
+// Evento de click para a próxima pergunta
+nextQuestionBtn.addEventListener('click', nextQuestion);
+
+// Novo evento de teclado no documento para capturar a tecla 'Enter'
+document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        if (!addWordsSection.classList.contains('hidden') && englishWordInput.value && portugueseWordInput.value) {
+            addBtn.click();
+        } else if (!gameSection.classList.contains('hidden') && !checkAnswerBtn.classList.contains('hidden') && userAnswerInput.value) {
+            checkAnswerBtn.click();
+        } else if (!gameSection.classList.contains('hidden') && !nextQuestionBtn.classList.contains('hidden')) {
+            nextQuestionBtn.click();
         }
+    }
+});
 
-        function updateProgressBar() {
-            const progress = (wordsAnswered / totalWords) * 100;
-            progressBar.style.width = `${progress}%`;
-        }
-
-        function startTimer() {
-            startTime = Date.now();
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-        function updateTimer() {
-            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-            const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
-            const seconds = (elapsedTime % 60).toString().padStart(2, '0');
-            if (timerElement) {
-                timerElement.textContent = `${minutes}:${seconds}`;
-            }
-        }
-        
-        function showSection(sectionId) {
-            dashboardSection.classList.add('hidden');
-            addWordsSection.classList.add('hidden');
-            gameSection.classList.add('hidden');
-            endGameSection.classList.add('hidden');
-            leaderboardSection.classList.add('hidden');
-            document.getElementById(sectionId).classList.remove('hidden');
-        }
-
-        function setActiveSidebarItem(sectionId) {
-            sidebarItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.section === sectionId) {
-                    item.classList.add('active');
-                }
-            });
-        }
-        
-        // Eventos para o novo design
-        startCard.addEventListener('click', () => {
-            if (dictionary.length > 0) {
-                showSection('game-section');
-                wordsAnswered = 0;
-                difficultWords = {};
-                startTimer();
-                nextQuestion();
-            } else {
-                alert('Adicione algumas palavras antes de começar a jogar!');
-                showSection('add-words-section');
-                setActiveSidebarItem('add-words-section');
-            }
-        });
-        
-        addCard.addEventListener('click', () => {
-            showSection('add-words-section');
-            setActiveSidebarItem('add-words-section');
-        });
-        
-        backToDashboardBtn.addEventListener('click', () => {
-            showSection('dashboard-section');
-            setActiveSidebarItem('dashboard-section');
-        });
-
-        goHomeBtn.addEventListener('click', () => {
-            showSection('dashboard-section');
-            setActiveSidebarItem('dashboard-section');
-        });
-
-        backFromLeaderboardBtn.addEventListener('click', () => {
-            showSection('dashboard-section');
-            setActiveSidebarItem('dashboard-section');
-        });
-
-        sidebarItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                const section = e.currentTarget.dataset.section;
-                showSection(section);
-                setActiveSidebarItem(section);
-            });
-        });
-
-        addBtn.addEventListener('click', () => {
-            const englishWord = englishWordInput.value.trim();
-            const portugueseWord = portugueseWordInput.value.trim();
-
-            if (englishWord && portugueseWord) {
-                dictionary.push({ english: englishWord, portuguese: portugueseWord });
-                englishWordInput.value = '';
-                portugueseWordInput.value = '';
-                messageElement.textContent = 'Palavra adicionada com sucesso! ✨';
-                messageElement.className = 'feedback-message correct';
-                saveDictionary();
-                renderWordList();
-            } else {
-                messageElement.textContent = 'Por favor, preencha ambos os campos. 😔';
-                messageElement.className = 'feedback-message incorrect';
-            }
-        });
-
-        function nextQuestion() {
-            if (wordsAnswered >= totalWords || dictionary.length === 0) {
-                endGame();
-                return;
-            }
-
-            resultMessageElement.textContent = '';
-            userAnswerInput.value = '';
-            userAnswerInput.className = 'answer-input';
-            nextQuestionBtn.classList.add('hidden');
-            checkAnswerBtn.classList.remove('hidden');
-            endQuestionBtn.classList.remove('hidden');
-            userAnswerInput.removeAttribute('disabled');
-            userAnswerInput.focus();
-
-            const randomIndex = Math.floor(Math.random() * dictionary.length);
-            currentWord = dictionary[randomIndex];
-
-            const direction = Math.random() < 0.5 ? 'en-pt' : 'pt-en';
-
-            if (direction === 'en-pt') {
-                wordToTranslateElement.textContent = currentWord.english;
-                wordToTranslateElement.dataset.correctAnswer = currentWord.portuguese;
-                questionTitle.textContent = 'Traduza a palavra em inglês:';
-                userAnswerInput.placeholder = 'Digite a tradução em português';
-            } else {
-                wordToTranslateElement.textContent = currentWord.portuguese;
-                wordToTranslateElement.dataset.correctAnswer = currentWord.english;
-                questionTitle.textContent = 'Traduza a palavra em português:';
-                userAnswerInput.placeholder = 'Digite a tradução em inglês';
-            }
-            updateProgressBar();
-        }
-
-        function endGame() {
-            clearInterval(timerInterval);
-            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-            const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
-            const seconds = (elapsedTime % 60).toString().padStart(2, '0');
-            const finalTime = `${minutes}:${seconds}`;
-
-            document.getElementById('final-time').textContent = `Seu tempo total foi: ${finalTime}`;
-            const difficultWordsListElement = document.getElementById('difficult-words-list');
-            const difficultWordsArray = Object.entries(difficultWords);
-            difficultWordsListElement.innerHTML = '';
-
-            if (difficultWordsArray.length > 0) {
-                let listHtml = '';
-                for (const [word, count] of difficultWordsArray) {
-                    const originalWord = dictionary.find(w => w.english === word || w.portuguese === word);
-                    listHtml += `<li>"${originalWord ? (originalWord.english + ' (' + originalWord.portuguese + ')') : word}" (você errou ${count} vezes)</li>`;
-                }
-                difficultWordsListElement.innerHTML = listHtml;
-            } else {
-                difficultWordsListElement.innerHTML = `<p>Você não teve dificuldades! Excelente! 💪</p>`;
-            }
-            
-            renderDifficultWords();
-            showSection('end-game-section');
-        }
-
-        checkAnswerBtn.addEventListener('click', () => {
-            const userAnswer = userAnswerInput.value.trim();
-            const correctAnswer = wordToTranslateElement.dataset.correctAnswer;
-            const wordKey = wordToTranslateElement.textContent;
-
-            const normalizedUserAnswer = normalizeString(userAnswer);
-            const normalizedCorrectAnswer = normalizeString(correctAnswer);
-
-            let isCorrect = false;
-            let message = '';
-
-            if (normalizedUserAnswer === normalizedCorrectAnswer) {
-                isCorrect = true;
-                message = 'Resposta correta! 🎉';
-            } else {
-                const similarity = getSimilarity(normalizedUserAnswer, normalizedCorrectAnswer);
-                if (similarity >= 0.8) {
-                    isCorrect = true;
-                    message = `Quase lá! A resposta correta era "${correctAnswer}".`;
-                } else {
-                    if (difficultWords[wordKey]) {
-                        difficultWords[wordKey]++;
-                    } else {
-                        difficultWords[wordKey] = 1;
-                    }
-                    message = `A resposta correta é "${correctAnswer}".`;
-                }
-            }
-
-            if (isCorrect) {
-                resultMessageElement.textContent = message;
-                resultMessageElement.className = 'feedback-message correct';
-                userAnswerInput.classList.add('correct');
-                wordsAnswered++;
-                updateProgressBar();
-            } else {
-                resultMessageElement.textContent = message;
-                resultMessageElement.className = 'feedback-message incorrect';
-                userAnswerInput.classList.add('incorrect');
-            }
-
-            userAnswerInput.setAttribute('disabled', 'true');
-            checkAnswerBtn.classList.add('hidden');
-            nextQuestionBtn.classList.remove('hidden');
-        });
-
-        nextQuestionBtn.addEventListener('click', nextQuestion);
-        endQuestionBtn.addEventListener('click', endGame);
-
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                if (!addWordsSection.classList.contains('hidden') && englishWordInput.value && portugueseWordInput.value) {
-                    addBtn.click();
-                } else if (!gameSection.classList.contains('hidden') && !checkAnswerBtn.classList.contains('hidden') && userAnswerInput.value) {
-                    checkAnswerBtn.click();
-                } else if (!gameSection.classList.contains('hidden') && !nextQuestionBtn.classList.contains('hidden')) {
-                    nextQuestionBtn.click();
-                }
-            }
-        });
-
-        // Evento para a navegação do header
-        document.querySelector('.nav-menu a[href="#"]').addEventListener('click', (e) => {
-            e.preventDefault();
-            showSection('dashboard-section');
-            setActiveSidebarItem('dashboard-section');
-        });
-        document.querySelector('.nav-menu a[href="#"]').nextElementSibling.addEventListener('click', (e) => {
-            e.preventDefault();
-            showSection('leaderboard-section');
-            setActiveSidebarItem('leaderboard-section');
-        });
-
-        showSection('dashboard-section');
-        loadDictionary();
+// Carrega o dicionário ao iniciar a página
+loadDictionary();
     </script>
 </body>
 </html>
