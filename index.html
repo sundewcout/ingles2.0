@@ -405,7 +405,9 @@
                 </div>
 
                 <div id="game-section" class="hidden">
-             
+                    <div class="header">
+                        <h1 id="question-title">Traduza:</h1>
+                    </div>
                     
                     <div class="progress-bar-container">
                         <div id="progress-bar" class="progress-bar"></div>
@@ -432,194 +434,268 @@
     </div>
 
     <script>
-        /* JavaScript */
-        const englishWordInput = document.getElementById('english-word');
-        const portugueseWordInput = document.getElementById('portuguese-word');
-        const addBtn = document.getElementById('add-btn');
-        const messageElement = document.getElementById('message');
-        const startGameBtn = document.getElementById('start-game-btn');
-        
-        const addWordsSection = document.getElementById('add-words-section');
-        const gameSection = document.getElementById('game-section');
-        const wordToTranslateElement = document.getElementById('word-to-translate');
-        const userAnswerInput = document.getElementById('user-answer');
-        const checkAnswerBtn = document.getElementById('check-answer-btn');
-        const resultMessageElement = document.getElementById('result-message');
-        const nextQuestionBtn = document.getElementById('next-question-btn');
-        const progressBar = document.getElementById('progress-bar');
-        const questionTitle = document.getElementById('question-title');
-        const wordListContainer = document.getElementById('word-list-container');
-        const wordListElement = document.getElementById('word-list');
-        
-        let dictionary = [];
-        let currentWord = null;
-        let wordsAnswered = 0;
-        const totalWords = 10; 
+      /* JavaScript */
+const englishWordInput = document.getElementById('english-word');
+const portugueseWordInput = document.getElementById('portuguese-word');
+const addBtn = document.getElementById('add-btn');
+const messageElement = document.getElementById('message');
+const startGameBtn = document.getElementById('start-game-btn');
 
-        // Salva o dicionário no localStorage
-        function saveDictionary() {
-            localStorage.setItem('dictionary', JSON.stringify(dictionary));
-        }
+const addWordsSection = document.getElementById('add-words-section');
+const gameSection = document.getElementById('game-section');
+const wordToTranslateElement = document.getElementById('word-to-translate');
+const userAnswerInput = document.getElementById('user-answer');
+const checkAnswerBtn = document.getElementById('check-answer-btn');
+const resultMessageElement = document.getElementById('result-message');
+const nextQuestionBtn = document.getElementById('next-question-btn');
+const progressBar = document.getElementById('progress-bar');
+const questionTitle = document.getElementById('question-title');
+const wordListContainer = document.getElementById('word-list-container');
+const wordListElement = document.getElementById('word-list');
 
-        // Carrega o dicionário do localStorage
-        function loadDictionary() {
-            const savedDictionary = localStorage.getItem('dictionary');
-            if (savedDictionary) {
-                dictionary = JSON.parse(savedDictionary);
-                if (dictionary.length > 0) {
-                    startGameBtn.classList.remove('hidden');
-                    wordListContainer.classList.remove('hidden');
+let dictionary = [];
+let currentWord = null;
+let wordsAnswered = 0;
+const totalWords = 10;
+
+// Função para remover acentos e converter para minúsculas
+function normalizeString(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+
+// Função para calcular a similaridade (Levenshtein Distance)
+function getSimilarity(s1, s2) {
+    const longer = s1.length > s2.length ? s1 : s2;
+    const shorter = s1.length > s2.length ? s2 : s1;
+    const longerLength = longer.length;
+    if (longerLength === 0) {
+        return 1.0;
+    }
+    return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+}
+
+function editDistance(s1, s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+
+    const costs = [];
+    for (let i = 0; i <= s1.length; i++) {
+        let lastValue = i;
+        for (let j = 0; j <= s2.length; j++) {
+            if (i === 0) {
+                costs[j] = j;
+            } else if (j > 0) {
+                let newValue = costs[j - 1];
+                if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+                    newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
                 }
+                costs[j - 1] = lastValue;
+                lastValue = newValue;
             }
-            // Adiciona uma pequena transição para a tela inicial aparecer suavemente
-            document.querySelector('.main-content-wrapper').style.opacity = '1';
-            document.querySelector('.main-content-wrapper').style.visibility = 'visible';
-            renderWordList();
         }
+        if (i > 0) {
+            costs[s2.length] = lastValue;
+        }
+    }
+    return costs[s2.length];
+}
 
-        // Renderiza a lista de palavras
-        function renderWordList() {
-            wordListElement.innerHTML = '';
-            if (dictionary.length > 0) {
-                wordListContainer.classList.remove('hidden');
-                dictionary.forEach((word, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'word-item';
-                    li.innerHTML = `
-                        <span class="word-pair">${word.english} - ${word.portuguese}</span>
-                        <button class="remove-btn" data-index="${index}">X</button>
-                    `;
-                    wordListElement.appendChild(li);
-                });
-            } else {
-                wordListContainer.classList.add('hidden');
-                startGameBtn.classList.add('hidden');
-            }
+// Salva o dicionário no localStorage
+function saveDictionary() {
+    localStorage.setItem('dictionary', JSON.stringify(dictionary));
+}
 
-            // Adiciona o evento de clique para os botões de remover
-            document.querySelectorAll('.remove-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const indexToRemove = e.target.dataset.index;
-                    removeWord(indexToRemove);
-                });
-            });
+// Carrega o dicionário do localStorage
+function loadDictionary() {
+    const savedDictionary = localStorage.getItem('dictionary');
+    if (savedDictionary) {
+        dictionary = JSON.parse(savedDictionary);
+        if (dictionary.length > 0) {
+            startGameBtn.classList.remove('hidden');
+            wordListContainer.classList.remove('hidden');
         }
-        
-        // Remove uma palavra do dicionário
-        function removeWord(index) {
-            dictionary.splice(index, 1);
-            saveDictionary();
-            renderWordList();
-        }
+    }
+    // Adiciona uma pequena transição para a tela inicial aparecer suavemente
+    document.querySelector('.main-content-wrapper').style.opacity = '1';
+    document.querySelector('.main-content-wrapper').style.visibility = 'visible';
+    renderWordList();
+}
 
-        // Atualiza a barra de progresso
-        function updateProgressBar() {
-            const progress = (wordsAnswered / totalWords) * 100;
-            progressBar.style.width = `${progress}%`;
-        }
-        
-        // Evento de click para adicionar uma nova palavra
-        addBtn.addEventListener('click', () => {
-            const englishWord = englishWordInput.value.trim().toLowerCase();
-            const portugueseWord = portugueseWordInput.value.trim().toLowerCase();
-        
-            if (englishWord && portugueseWord) {
-                dictionary.push({ english: englishWord, portuguese: portugueseWord });
-                englishWordInput.value = '';
-                portugueseWordInput.value = '';
-                messageElement.textContent = 'Palavra adicionada com sucesso! ✨';
-                messageElement.className = 'feedback-message correct';
-                startGameBtn.classList.remove('hidden');
-                wordListContainer.classList.remove('hidden');
-                saveDictionary();
-                renderWordList();
-            } else {
-                messageElement.textContent = 'Por favor, preencha ambos os campos. 😔';
-                messageElement.className = 'feedback-message incorrect';
-            }
+// Renderiza a lista de palavras
+function renderWordList() {
+    wordListElement.innerHTML = '';
+    if (dictionary.length > 0) {
+        wordListContainer.classList.remove('hidden');
+        dictionary.forEach((word, index) => {
+            const li = document.createElement('li');
+            li.className = 'word-item';
+            li.innerHTML = `
+                <span class="word-pair">${word.english} - ${word.portuguese}</span>
+                <button class="remove-btn" data-index="${index}">X</button>
+            `;
+            wordListElement.appendChild(li);
         });
-        
-        // Evento de click para começar o jogo
-        startGameBtn.addEventListener('click', () => {
-            if (dictionary.length > 0) {
-                addWordsSection.classList.add('hidden');
-                gameSection.classList.remove('hidden');
-                wordsAnswered = 0;
-                nextQuestion();
-            }
-        });
-        
-        // Função para selecionar e exibir a próxima pergunta
-        function nextQuestion() {
-            if (wordsAnswered >= totalWords) {
-                alert('Parabéns! Você completou o jogo!');
-                location.reload(); // Recarrega a página para reiniciar
-                return;
-            }
-            
-            // Limpa a tela
-            resultMessageElement.textContent = '';
-            userAnswerInput.value = '';
-            userAnswerInput.className = 'answer-input';
-            nextQuestionBtn.classList.add('hidden');
-            checkAnswerBtn.classList.remove('hidden');
-            userAnswerInput.removeAttribute('disabled');
-            userAnswerInput.focus();
-            
-            // Seleciona uma palavra aleatória do dicionário
-            const randomIndex = Math.floor(Math.random() * dictionary.length);
-            currentWord = dictionary[randomIndex];
-            
-            // Decide aleatoriamente se a tradução será de inglês para português ou vice-versa
-            const direction = Math.random() < 0.5 ? 'en-pt' : 'pt-en';
-            
-            if (direction === 'en-pt') {
-                wordToTranslateElement.textContent = currentWord.english;
-                wordToTranslateElement.dataset.correctAnswer = currentWord.portuguese;
-                questionTitle.textContent = 'Traduza a palavra em inglês:';
-                userAnswerInput.placeholder = 'Digite a tradução em português';
-            } else {
-                wordToTranslateElement.textContent = currentWord.portuguese;
-                wordToTranslateElement.dataset.correctAnswer = currentWord.english;
-                questionTitle.textContent = 'Traduza a palavra em português:';
-                userAnswerInput.placeholder = 'Digite a tradução em inglês';
-            }
-            updateProgressBar();
-        }
-        
-        // Evento de click para verificar a resposta
-        checkAnswerBtn.addEventListener('click', () => {
-            const userAnswer = userAnswerInput.value.trim().toLowerCase();
-            const correctAnswer = wordToTranslateElement.dataset.correctAnswer.toLowerCase();
-        
-            if (userAnswer === correctAnswer) {
-                resultMessageElement.textContent = 'Resposta correta! 🎉';
-                resultMessageElement.className = 'feedback-message correct';
-                userAnswerInput.classList.add('correct');
-            } else {
-                resultMessageElement.textContent = `A resposta correta é "${correctAnswer}".`;
-                resultMessageElement.className = 'feedback-message incorrect';
-                userAnswerInput.classList.add('incorrect');
-            }
-        
-            userAnswerInput.setAttribute('disabled', 'true');
-            checkAnswerBtn.classList.add('hidden');
-            nextQuestionBtn.classList.remove('hidden');
-            wordsAnswered++;
-        });
+    } else {
+        wordListContainer.classList.add('hidden');
+        startGameBtn.classList.add('hidden');
+    }
 
-        // Evento de tecla para verificar a resposta (enter)
-        userAnswerInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                checkAnswerBtn.click();
-            }
+    // Adiciona o evento de clique para os botões de remover
+    document.querySelectorAll('.remove-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const indexToRemove = e.target.dataset.index;
+            removeWord(index);
         });
-        
-        // Evento de click para a próxima pergunta
-        nextQuestionBtn.addEventListener('click', nextQuestion);
-        
-        // Carrega o dicionário ao iniciar a página
-        loadDictionary();
+    });
+}
+
+// Remove uma palavra do dicionário
+function removeWord(index) {
+    dictionary.splice(index, 1);
+    saveDictionary();
+    renderWordList();
+}
+
+// Atualiza a barra de progresso
+function updateProgressBar() {
+    const progress = (wordsAnswered / totalWords) * 100;
+    progressBar.style.width = `${progress}%`;
+}
+
+// Evento de click para adicionar uma nova palavra
+addBtn.addEventListener('click', () => {
+    const englishWord = englishWordInput.value.trim();
+    const portugueseWord = portugueseWordInput.value.trim();
+
+    if (englishWord && portugueseWord) {
+        dictionary.push({ english: englishWord, portuguese: portugueseWord });
+        englishWordInput.value = '';
+        portugueseWordInput.value = '';
+        messageElement.textContent = 'Palavra adicionada com sucesso! ✨';
+        messageElement.className = 'feedback-message correct';
+        startGameBtn.classList.remove('hidden');
+        wordListContainer.classList.remove('hidden');
+        saveDictionary();
+        renderWordList();
+    } else {
+        messageElement.textContent = 'Por favor, preencha ambos os campos. 😔';
+        messageElement.className = 'feedback-message incorrect';
+    }
+});
+
+// Evento de click para começar o jogo
+startGameBtn.addEventListener('click', () => {
+    if (dictionary.length > 0) {
+        addWordsSection.classList.add('hidden');
+        gameSection.classList.remove('hidden');
+        wordsAnswered = 0;
+        nextQuestion();
+    }
+});
+
+// Função para selecionar e exibir a próxima pergunta
+function nextQuestion() {
+    if (wordsAnswered >= totalWords) {
+        alert('Parabéns! Você completou o jogo!');
+        location.reload(); // Recarrega a página para reiniciar
+        return;
+    }
+
+    // Limpa a tela
+    resultMessageElement.textContent = '';
+    userAnswerInput.value = '';
+    userAnswerInput.className = 'answer-input';
+    nextQuestionBtn.classList.add('hidden');
+    checkAnswerBtn.classList.remove('hidden');
+    userAnswerInput.removeAttribute('disabled');
+    userAnswerInput.focus();
+
+    // Seleciona uma palavra aleatória do dicionário
+    const randomIndex = Math.floor(Math.random() * dictionary.length);
+    currentWord = dictionary[randomIndex];
+
+    // Decide aleatoriamente se a tradução será de inglês para português ou vice-versa
+    const direction = Math.random() < 0.5 ? 'en-pt' : 'pt-en';
+
+    if (direction === 'en-pt') {
+        wordToTranslateElement.textContent = currentWord.english;
+        wordToTranslateElement.dataset.correctAnswer = currentWord.portuguese;
+        questionTitle.textContent = 'Traduza a palavra em inglês:';
+        userAnswerInput.placeholder = 'Digite a tradução em português';
+    } else {
+        wordToTranslateElement.textContent = currentWord.portuguese;
+        wordToTranslateElement.dataset.correctAnswer = currentWord.english;
+        questionTitle.textContent = 'Traduza a palavra em português:';
+        userAnswerInput.placeholder = 'Digite a tradução em inglês';
+    }
+    updateProgressBar();
+}
+
+// Evento de click para verificar a resposta (lógica aprimorada)
+checkAnswerBtn.addEventListener('click', () => {
+    const userAnswer = userAnswerInput.value.trim();
+    const correctAnswer = wordToTranslateElement.dataset.correctAnswer;
+
+    const normalizedUserAnswer = normalizeString(userAnswer);
+    const normalizedCorrectAnswer = normalizeString(correctAnswer);
+
+    let isCorrect = false;
+    let message = '';
+
+    // 1. Verificação exata (ignorando acentos e maiúsculas/minúsculas)
+    if (normalizedUserAnswer === normalizedCorrectAnswer) {
+        isCorrect = true;
+        message = 'Resposta correta! 🎉';
+    }
+    // 2. Verificação de similaridade (acima de 80%)
+    else {
+        const similarity = getSimilarity(normalizedUserAnswer, normalizedCorrectAnswer);
+        if (similarity >= 0.8) {
+            isCorrect = true;
+            message = `Quase lá! A resposta correta era "${correctAnswer}".`;
+        }
+    }
+
+    if (isCorrect) {
+        resultMessageElement.textContent = message;
+        resultMessageElement.className = 'feedback-message correct';
+        userAnswerInput.classList.add('correct');
+        wordsAnswered++; // A contagem só aumenta em caso de acerto
+        updateProgressBar();
+    } else {
+        resultMessageElement.textContent = `A resposta correta é "${correctAnswer}".`;
+        resultMessageElement.className = 'feedback-message incorrect';
+        userAnswerInput.classList.add('incorrect');
+    }
+
+    userAnswerInput.setAttribute('disabled', 'true');
+    checkAnswerBtn.classList.add('hidden');
+    nextQuestionBtn.classList.remove('hidden');
+});
+
+// Evento de click para a próxima pergunta
+nextQuestionBtn.addEventListener('click', nextQuestion);
+
+// Novo evento de teclado no documento para capturar a tecla 'Enter'
+document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        // Se a seção de adicionar palavras está visível, tenta adicionar
+        if (!addWordsSection.classList.contains('hidden') && englishWordInput.value && portugueseWordInput.value) {
+            addBtn.click();
+        } 
+        // Se a seção do jogo está visível e o botão de "Verificar" está visível
+        else if (!gameSection.classList.contains('hidden') && !checkAnswerBtn.classList.contains('hidden') && userAnswerInput.value) {
+            checkAnswerBtn.click();
+        } 
+        // Se a seção do jogo está visível e o botão de "Próxima" está visível
+        else if (!gameSection.classList.contains('hidden') && !nextQuestionBtn.classList.contains('hidden')) {
+            nextQuestionBtn.click();
+        }
+    }
+});
+
+// Carrega o dicionário ao iniciar a página
+loadDictionary();
     </script>
 </body>
 </html>
