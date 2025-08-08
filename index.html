@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tradutor Duolingo-like</title>
+    <title>Treinador de Vocabulário Inteligente</title>
     <style>
-        /* CSS */
+        /* CSS original */
         @font-face {
             font-family: 'museo-sans-rounded';
             src: url('https://d7mj4aqfscim2.cloudfront.net/proxy/fonts/museo/museosansrounded-700-webfont.eot');
             src: url('https://d7mj4aqfscim2.cloudfront.net/proxy/fonts/museo/museosansrounded-700-webfont.eot?#iefix') format('embedded-opentype'),
                     url('https://d7mj4aqfscim2.cloudfront.net/proxy/fonts/museo/museosansrounded-700-webfont.woff2') format('woff2'),
-                    url('https://d7mj4aqfscim2.cloudfront.net/proxy/fonts/museo/museosansrounded-700-webfont.woff') format('woff'),
+                    url('https://d7mj4aqfscim2.cloudfront.com/proxy/fonts/museo/museosansrounded-700-webfont.woff') format('woff'),
                     url('https://d7mj4aqfscim2.cloudfront.com/proxy/fonts/museo/museosansrounded-700-webfont.svg#museo_sans_rounded700') format('svg');
             font-weight: 700;
             font-style: normal;
@@ -23,26 +23,27 @@
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             color: #4b4b4b;
         }
 
         .main-content-wrapper {
             width: 100%;
-            height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding-top: 50px;
+            box-sizing: border-box;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.5s ease-in-out;
+            max-width: 600px;
         }
 
         .container {
             position: relative;
             width: 100%;
-            max-width: 600px;
             background-color: transparent;
             padding: 20px;
             text-align: center;
@@ -103,8 +104,8 @@
             width: 100%;
             padding: 14px;
             border: 2px solid #e5e5e5;
-            border-bottom-width: 5px;
-            border-radius: 9px;
+            border-bottom-width: 3px;
+            border-radius: 11px;
             font-size: 16px;
             text-align: center;
             box-sizing: border-box;
@@ -169,7 +170,7 @@
             margin-top: 16px;
         }
 
-        .check-button {
+        .action-button {
             width: 50%;
             padding: 12px;
             border: none;
@@ -181,58 +182,37 @@
             color: white;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .action-button.verify {
             background-color: #58cc02;
             box-shadow: 0 4px 0 #4bb302;
         }
-
-        .check-button:hover {
+        .action-button.verify:hover {
             background-color: #5de604;
         }
-
-        .check-button:active {
+        .action-button.verify:active {
             transform: translateY(2px);
             box-shadow: 0 2px 0 #4bb302;
         }
 
-        .next-button {
-            width: 50%;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .action-button.next {
             background-color: #1cb0f6;
             box-shadow: 0 4px 0 #1898e0;
         }
-
-        .next-button:hover {
+        .action-button.next:hover {
             background-color: #20b6ff;
         }
-
-        .next-button:active {
+        .action-button.next:active {
             transform: translateY(2px);
             box-shadow: 0 2px 0 #1898e0;
         }
 
         .progress-bar-container {
-            width: 100%;
-            height: 12px;
-            background-color: #e5e5e5;
-            border-radius: 999px;
-            margin: 30px 0;
-            overflow: hidden;
+            display: none; /* ESCONDIDO */
         }
-
         .progress-bar {
-            height: 100%;
-            border-radius: 999px;
-            background: linear-gradient(to right, #58cc02, #5de604);
-            transition: width 0.4s ease-in-out;
+            display: none; /* ESCONDIDO */
         }
 
         .menu {
@@ -303,7 +283,7 @@
             font-family: 'museo-sans-rounded', sans-serif;
             font-weight: 700;
         }
-        
+
         #word-list-container {
             margin-top: 20px;
             text-align: left;
@@ -340,16 +320,16 @@
         }
 
         .remove-btn {
-            background-color: #ff4b4b; /* Fundo vermelho */
+            background-color: #ff4b4b;
             border: 2px solid #ff4b4b;
-            border-bottom: 5px solid #e04343; /* Borda inferior mais escura */
-            color: white; /* Letra branca */
+            border-bottom: 5px solid #e04343;
+            color: white;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             width: 28px;
             height: 28px;
-            border-radius: 8px; /* Borda arredondada */
+            border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -359,21 +339,117 @@
         .remove-btn:hover {
             background-color: #ff6a6a;
             border-color: #ff6a6a;
-            box-shadow: 0 3px 0 #e04343; /* Sombra sutil para o hover */
+            box-shadow: 0 3px 0 #e04343;
         }
 
         .remove-btn:active {
             transform: translateY(2px);
             box-shadow: 0 1px 0 #e04343;
         }
-        
-        /* Responsividade para telas menores */
+
+        /* Novas classes para os tipos de pergunta */
+        .multiple-choice-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option-button {
+            padding: 15px;
+            border: 2px solid #e5e5e5;
+            border-bottom-width: 5px;
+            border-radius: 9px;
+            background-color: #fff;
+            font-family: 'museo-sans-rounded', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-button:hover {
+            background-color: #f7f7f7;
+        }
+
+        .option-button.selected {
+            background-color: #1cb0f6;
+            color: white;
+            border-color: #1cb0f6;
+            border-bottom-color: #1898e0;
+        }
+
+        .option-button.correct {
+            background-color: #d7ffb8;
+            color: #58cc02;
+            border-color: #58cc02;
+            border-bottom-color: #4bb302;
+        }
+
+        .option-button.incorrect {
+            background-color: #ffdde0;
+            color: #ff4b4b;
+            border-color: #ff4b4b;
+            border-bottom-color: #e04343;
+        }
+
+        .match-game-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .match-item {
+            padding: 15px;
+            border: 2px solid #e5e5e5;
+            border-bottom-width: 5px;
+            border-radius: 9px;
+            background-color: #fff;
+            font-family: 'museo-sans-rounded', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .match-item:hover {
+            background-color: #f7f7f7;
+        }
+
+        .match-item.selected {
+            background-color: #1cb0f6;
+            color: white;
+            border-color: #1cb0f6;
+            border-bottom-color: #1898e0;
+        }
+
+        .match-item.correct {
+            background-color: #d7ffb8;
+            color: #58cc02;
+            border-color: #58cc02;
+            border-bottom-color: #4bb302;
+        }
+
+        .match-item.incorrect {
+            background-color: #ffdde0;
+            color: #ff4b4b;
+            border-color: #ff4b4b;
+            border-bottom-color: #e04343;
+        }
+
         @media (max-width: 600px) {
-            .check-button, .next-button {
+            .action-button {
                 width: 100%;
             }
             .button-container {
                 display: block;
+            }
+            .multiple-choice-options {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -387,7 +463,7 @@
                 <div id="add-words-section">
                     <div class="menu">
                         <h2>Adicionar Palavras Personalizadas</h2>
-                        <p>Digite a palavra e sua tradução para começar seu jogo.</p>
+                        <p>Digite a palavra e sua tradução para começar seu jogo. Você pode adicionar quantas quiser!</p>
                         <div class="input-group">
                             <input type="text" id="english-word" placeholder="Palavra em Inglês">
                             <input type="text" id="portuguese-word" placeholder="Tradução em Português">
@@ -406,29 +482,17 @@
 
                 <div id="game-section" class="hidden">
                     <div class="header">
-                        <h1 id="question-title">Traduza:</h1>
+                        <h1 id="question-title"></h1>
                     </div>
-                    
-                    <div class="progress-bar-container">
-                        <div id="progress-bar" class="progress-bar"></div>
-                    </div>
-                    <div id="timer" style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">00:00</div>
-
                     
                     <div class="question-box">
-                        <p>Traduza a palavra:</p>
-                        <div class="word-and-info">
-                            <div id="word-to-translate" class="word-to-translate"></div>
-                        </div>
-                        <div class="answer-input-container">
-                            <input type="text" id="user-answer" class="answer-input" placeholder="Digite sua tradução">
-                        </div>
+                        <div id="question-content">
+                            </div>
                         <div id="result-message" class="feedback-message"></div>
                     </div>
 
                     <div class="button-container">
-                        <button id="check-answer-btn" class="check-button">Verificar</button>
-                        <button id="next-question-btn" class="next-button hidden">Próxima</button>
+                        <button id="action-btn" class="action-button verify" disabled>Verificar</button>
                     </div>
                 </div>
             </div>
@@ -436,327 +500,571 @@
     </div>
 
     <script>
- /* JavaScript */
-const englishWordInput = document.getElementById('english-word');
-const portugueseWordInput = document.getElementById('portuguese-word');
-const addBtn = document.getElementById('add-btn');
-const messageElement = document.getElementById('message');
-const startGameBtn = document.getElementById('start-game-btn');
+        const englishWordInput = document.getElementById('english-word');
+        const portugueseWordInput = document.getElementById('portuguese-word');
+        const addBtn = document.getElementById('add-btn');
+        const messageElement = document.getElementById('message');
+        const startGameBtn = document.getElementById('start-game-btn');
 
-const addWordsSection = document.getElementById('add-words-section');
-const gameSection = document.getElementById('game-section');
-const wordToTranslateElement = document.getElementById('word-to-translate');
-const userAnswerInput = document.getElementById('user-answer');
-const checkAnswerBtn = document.getElementById('check-answer-btn');
-const resultMessageElement = document.getElementById('result-message');
-const nextQuestionBtn = document.getElementById('next-question-btn');
-const progressBar = document.getElementById('progress-bar');
-const questionTitle = document.getElementById('question-title');
-const wordListContainer = document.getElementById('word-list-container');
-const wordListElement = document.getElementById('word-list');
-const timerElement = document.getElementById('timer');
+        const addWordsSection = document.getElementById('add-words-section');
+        const gameSection = document.getElementById('game-section');
+        const questionTitle = document.getElementById('question-title');
+        const questionContent = document.getElementById('question-content');
+        const actionBtn = document.getElementById('action-btn');
+        const resultMessageElement = document.getElementById('result-message');
+        const wordListContainer = document.getElementById('word-list-container');
+        const wordListElement = document.getElementById('word-list');
+        
+        // Removemos o timer e a barra de progresso do JS
+        // const progressBar = document.getElementById('progress-bar');
+        // const timerElement = document.getElementById('timer');
+        // let startTime;
+        // let timerInterval;
 
-let dictionary = [];
-let currentWord = null;
-let wordsAnswered = 0;
-let totalRounds = 0;
-let difficultWords = {};
-let startTime;
-let timerInterval;
+        let dictionary = [];
+        let difficultWords = {}; // Objeto para contar erros
+        let currentQuestion = null;
+        let selectedAnswers = [];
 
-// Função para remover acentos e converter para minúsculas
-function normalizeString(str) {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-}
+        // Funções de utilidade
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
-// Função para calcular a similaridade (Levenshtein Distance)
-function getSimilarity(s1, s2) {
-  const longer = s1.length > s2.length ? s1 : s2;
-  const shorter = s1.length > s2.length ? s2 : s1;
-  const longerLength = longer.length;
-  if (longerLength === 0) {
-    return 1.0;
-  }
-  return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
-}
+        function normalizeString(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+        }
 
-function editDistance(s1, s2) {
-  s1 = s1.toLowerCase();
-  s2 = s2.toLowerCase();
+        function getSimilarity(s1, s2) {
+            const longer = s1.length > s2.length ? s1 : s2;
+            const shorter = s1.length > s2.length ? s2 : s1;
+            const longerLength = longer.length;
+            if (longerLength === 0) {
+                return 1.0;
+            }
+            return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+        }
 
-  const costs = [];
-  for (let i = 0; i <= s1.length; i++) {
-    let lastValue = i;
-    for (let j = 0; j <= s2.length; j++) {
-      if (i === 0) {
-        costs[j] = j;
-      } else if (j > 0) {
-        let newValue = costs[j - 1];
-        if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
-          newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
-        }
-        costs[j - 1] = lastValue;
-        lastValue = newValue;
-      }
-    }
-    if (i > 0) {
-      costs[s2.length] = lastValue;
-    }
-  }
-  return costs[s2.length];
-}
+        function editDistance(s1, s2) {
+            s1 = s1.toLowerCase();
+            s2 = s2.toLowerCase();
+            const costs = [];
+            for (let i = 0; i <= s1.length; i++) {
+                let lastValue = i;
+                for (let j = 0; j <= s2.length; j++) {
+                    if (i === 0) {
+                        costs[j] = j;
+                    } else if (j > 0) {
+                        let newValue = costs[j - 1];
+                        if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+                            newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                        }
+                        costs[j - 1] = lastValue;
+                        lastValue = newValue;
+                    }
+                }
+                if (i > 0) {
+                    costs[s2.length] = lastValue;
+                }
+            }
+            return costs[s2.length];
+        }
 
-// Salva o dicionário no localStorage
-function saveDictionary() {
-  localStorage.setItem('dictionary', JSON.stringify(dictionary));
-}
+        // Lógica de armazenamento
+        function saveDictionary() {
+            localStorage.setItem('dictionary', JSON.stringify(dictionary));
+            localStorage.setItem('difficultWords', JSON.stringify(difficultWords));
+        }
 
-// Carrega o dicionário do localStorage
-function loadDictionary() {
-  const savedDictionary = localStorage.getItem('dictionary');
-  if (savedDictionary) {
-    dictionary = JSON.parse(savedDictionary);
-    if (dictionary.length > 0) {
-      startGameBtn.classList.remove('hidden');
-      wordListContainer.classList.remove('hidden');
-    }
-  }
-  document.querySelector('.main-content-wrapper').style.opacity = '1';
-  document.querySelector('.main-content-wrapper').style.visibility = 'visible';
-  renderWordList();
-}
+        function loadDictionary() {
+            const savedDictionary = localStorage.getItem('dictionary');
+            const savedDifficultWords = localStorage.getItem('difficultWords');
+            if (savedDictionary) {
+                dictionary = JSON.parse(savedDictionary);
+                if (dictionary.length >= 1) { 
+                    startGameBtn.classList.remove('hidden');
+                    wordListContainer.classList.remove('hidden');
+                }
+            }
+            if (savedDifficultWords) {
+                difficultWords = JSON.parse(savedDifficultWords);
+            }
+            document.querySelector('.main-content-wrapper').style.opacity = '1';
+            document.querySelector('.main-content-wrapper').style.visibility = 'visible';
+            renderWordList();
+        }
 
-// Renderiza a lista de palavras
-function renderWordList() {
-  wordListElement.innerHTML = '';
-  if (dictionary.length > 0) {
-    wordListContainer.classList.remove('hidden');
-    dictionary.forEach((word, index) => {
-      const li = document.createElement('li');
-      li.className = 'word-item';
-      li.innerHTML = `
-                <span class="word-pair">${word.english} - ${word.portuguese}</span>
-                <button class="remove-btn" data-index="${index}">X</button>
-            `;
-      wordListElement.appendChild(li);
-    });
-  } else {
-    wordListContainer.classList.add('hidden');
-    startGameBtn.classList.add('hidden');
-  }
+        function renderWordList() {
+            wordListElement.innerHTML = '';
+            if (dictionary.length > 0) {
+                wordListContainer.classList.remove('hidden');
+                dictionary.forEach((word, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'word-item';
+                    li.innerHTML = `
+                        <span class="word-pair">${word.english} - ${word.portuguese}</span>
+                        <button class="remove-btn" data-index="${index}">X</button>
+                    `;
+                    wordListElement.appendChild(li);
+                });
+            } else {
+                wordListContainer.classList.add('hidden');
+            }
+            
+            if (dictionary.length >= 1) {
+                startGameBtn.classList.remove('hidden');
+            } else {
+                startGameBtn.classList.add('hidden');
+            }
 
-  document.querySelectorAll('.remove-btn').forEach(button => {
-    button.addEventListener('click', (e) => {
-      const indexToRemove = e.target.dataset.index;
-      removeWord(indexToRemove);
-    });
-  });
-}
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const indexToRemove = e.target.dataset.index;
+                    removeWord(indexToRemove);
+                });
+            });
+        }
 
-// Remove uma palavra do dicionário
-function removeWord(index) {
-  dictionary.splice(index, 1);
-  saveDictionary();
-  renderWordList();
-}
+        function removeWord(index) {
+            // Remove a palavra do dicionário e do histórico de erros
+            const wordToRemove = dictionary[index].english;
+            dictionary.splice(index, 1);
+            delete difficultWords[wordToRemove];
 
-// Atualiza a barra de progresso
-function updateProgressBar() {
-  const progress = (wordsAnswered / totalRounds) * 100;
-  progressBar.style.width = `${progress}%`;
-}
+            saveDictionary();
+            renderWordList();
+        }
 
-// Inicia o timer
-function startTimer() {
-  startTime = Date.now();
-  timerInterval = setInterval(updateTimer, 1000);
-}
+        // Lógica do jogo
+        // A função updateProgressBar() e startTimer() foram removidas
 
-// Atualiza o display do timer
-function updateTimer() {
-  const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-  const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
-  const seconds = (elapsedTime % 60).toString().padStart(2, '0');
-  if (timerElement) {
-    timerElement.textContent = `${minutes}:${seconds}`;
-  }
-}
+        // Lógica para os diferentes tipos de perguntas
+        function generateTranslateByTyping() {
+            const correctWord = getNextWord();
+            const direction = Math.random() < 0.5 ? 'en-pt' : 'pt-en';
 
-// Evento de click para adicionar uma nova palavra
-addBtn.addEventListener('click', () => {
-  const englishWord = englishWordInput.value.trim();
-  const portugueseWord = portugueseWordInput.value.trim();
+            let questionWord;
+            let correctAnswer;
+            let placeholderText;
 
-  if (englishWord && portugueseWord) {
-    dictionary.push({ english: englishWord, portuguese: portugueseWord });
-    englishWordInput.value = '';
-    portugueseWordInput.value = '';
-    messageElement.textContent = 'Palavra adicionada com sucesso! ✨';
-    messageElement.className = 'feedback-message correct';
-    startGameBtn.classList.remove('hidden');
-    wordListContainer.classList.remove('hidden');
-    saveDictionary();
-    renderWordList();
-  } else {
-    messageElement.textContent = 'Por favor, preencha ambos os campos. 😔';
-    messageElement.className = 'feedback-message incorrect';
-  }
-});
+            if (direction === 'en-pt') {
+                questionWord = correctWord.english;
+                correctAnswer = correctWord.portuguese;
+                placeholderText = 'Digite a tradução em português';
+                questionTitle.textContent = 'Traduza esta palavra:';
+            } else {
+                questionWord = correctWord.portuguese;
+                correctAnswer = correctWord.english;
+                placeholderText = 'Digite a tradução em inglês';
+                questionTitle.textContent = 'Traduza esta palavra:';
+            }
 
-// Evento de click para começar o jogo
-startGameBtn.addEventListener('click', () => {
-  if (dictionary.length > 0) {
-    addWordsSection.classList.add('hidden');
-    gameSection.classList.remove('hidden');
-    wordsAnswered = 0;
-    difficultWords = {};
-    // Define o número total de rodadas com base no número de palavras
-    totalRounds = dictionary.length * 6; // Adicionado para fazer o número de perguntas aumentar com o número de palavras
-    startTimer();
-    nextQuestion();
-  }
-});
+            currentQuestion = {
+                type: 'text-input',
+                question: questionWord,
+                correctAnswer: correctAnswer,
+                placeholder: placeholderText,
+                wordKey: correctWord.english
+            };
 
-// Função para selecionar e exibir a próxima pergunta
-function nextQuestion() {
-  if (wordsAnswered >= totalRounds) {
-    endGame();
-    return;
-  }
+            renderQuestion();
+        }
 
-  resultMessageElement.textContent = '';
-  userAnswerInput.value = '';
-  userAnswerInput.className = 'answer-input';
-  nextQuestionBtn.classList.add('hidden');
-  checkAnswerBtn.classList.remove('hidden');
-  userAnswerInput.removeAttribute('disabled');
-  userAnswerInput.focus();
 
-  const randomIndex = Math.floor(Math.random() * dictionary.length);
-  currentWord = dictionary[randomIndex];
+        function generateMultipleChoice() {
+            const correctWord = getNextWord();
+            const direction = Math.random() < 0.5 ? 'en-pt' : 'pt-en';
 
-  const direction = Math.random() < 0.5 ? 'en-pt' : 'pt-en';
+            let questionWord;
+            let correctAnswer;
+            let options = [];
 
-  if (direction === 'en-pt') {
-    wordToTranslateElement.textContent = currentWord.english;
-    wordToTranslateElement.dataset.correctAnswer = currentWord.portuguese;
-    questionTitle.textContent = 'Traduza a palavra em inglês:';
-    userAnswerInput.placeholder = 'Digite a tradução em português';
-  } else {
-    wordToTranslateElement.textContent = currentWord.portuguese;
-    wordToTranslateElement.dataset.correctAnswer = currentWord.english;
-    questionTitle.textContent = 'Traduza a palavra em português:';
-    userAnswerInput.placeholder = 'Digite a tradução em inglês';
-  }
-  updateProgressBar();
-}
+            if (direction === 'en-pt') {
+                questionWord = correctWord.english;
+                correctAnswer = correctWord.portuguese;
+                options.push(correctAnswer);
+                questionTitle.textContent = 'Escolha a tradução correta para:';
+            } else {
+                questionWord = correctWord.portuguese;
+                correctAnswer = correctWord.english;
+                options.push(correctAnswer);
+                questionTitle.textContent = 'Escolha a tradução correta para:';
+            }
 
-// Função para finalizar o jogo
-function endGame() {
-  clearInterval(timerInterval);
-  const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-  const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
-  const seconds = (elapsedTime % 60).toString().padStart(2, '0');
-  const finalTime = `${minutes}:${seconds}`;
+            const otherWords = dictionary.filter(w => w !== correctWord);
+            shuffleArray(otherWords);
 
-  gameSection.innerHTML = `
-        <div class="menu">
-            <h2>Parabéns! Você completou o jogo! 🎉</h2>
-            <p>Seu tempo total foi: <strong>${finalTime}</strong></p>
-            <h3>Palavras que você teve dificuldade:</h3>
-            <div id="difficult-words-list"></div>
-            <button id="restart-game-btn" class="start-button">Jogar Novamente</button>
-        </div>
-    `;
+            for (let i = 0; options.length < 4 && i < otherWords.length; i++) {
+                if (direction === 'en-pt') {
+                    options.push(otherWords[i].portuguese);
+                } else {
+                    options.push(otherWords[i].english);
+                }
+            }
 
-  const difficultWordsListElement = document.getElementById('difficult-words-list');
-  const difficultWordsArray = Object.entries(difficultWords);
+            shuffleArray(options);
 
-  if (difficultWordsArray.length > 0) {
-    let listHtml = '<ul>';
-    for (const [word, count] of difficultWordsArray) {
-      const originalWord = dictionary.find(w => w.english === word || w.portuguese === word);
-      if (originalWord) {
-        listHtml += `<li>"${originalWord.english}" (você errou ${count} vez${count > 1 ? 'es' : ''})</li>`;
-      }
-    }
-    listHtml += '</ul>';
-    difficultWordsListElement.innerHTML = listHtml;
-  } else {
-    difficultWordsListElement.innerHTML = `<p>Você não teve dificuldades! Excelente! 💪</p>`;
-  }
+            currentQuestion = {
+                type: 'multiple-choice',
+                question: questionWord,
+                correctAnswer: correctAnswer,
+                options: options,
+                wordKey: correctWord.english
+            };
 
-  document.getElementById('restart-game-btn').addEventListener('click', () => {
-    location.reload();
-  });
-}
+            renderQuestion();
+        }
 
-// Evento de click para verificar a resposta
-checkAnswerBtn.addEventListener('click', () => {
-  const userAnswer = userAnswerInput.value.trim();
-  const correctAnswer = wordToTranslateElement.dataset.correctAnswer;
-  const wordKey = wordToTranslateElement.textContent;
+        function generateMatchingGame() {
+            const wordsToMatch = getMatchingWords();
+            const leftSide = wordsToMatch.map(w => w.english);
+            const rightSide = shuffleArray(wordsToMatch.map(w => w.portuguese));
 
-  const normalizedUserAnswer = normalizeString(userAnswer);
-  const normalizedCorrectAnswer = normalizeString(correctAnswer);
+            currentQuestion = {
+                type: 'matching',
+                left: leftSide,
+                right: rightSide,
+                correctAnswers: wordsToMatch
+            };
+            
+            questionTitle.textContent = 'Ligue as palavras às suas traduções:';
+            selectedAnswers = [];
+            renderQuestion();
+        }
 
-  let isCorrect = false;
-  let message = '';
+        function renderQuestion() {
+            questionContent.innerHTML = '';
+            resultMessageElement.textContent = '';
+            
+            actionBtn.textContent = 'Verificar';
+            actionBtn.classList.remove('next');
+            actionBtn.classList.add('verify');
+            actionBtn.setAttribute('disabled', 'true');
 
-  if (normalizedUserAnswer === normalizedCorrectAnswer) {
-    isCorrect = true;
-    message = 'Resposta correta! 🎉';
-  } else {
-    const similarity = getSimilarity(normalizedUserAnswer, normalizedCorrectAnswer);
-    if (similarity >= 0.8) {
-      isCorrect = true;
-      message = `Quase lá! A resposta correta era "${correctAnswer}".`;
-    } else {
-      // Contabiliza a dificuldade
-      if (difficultWords[wordKey]) {
-        difficultWords[wordKey]++;
-      } else {
-        difficultWords[wordKey] = 1;
-      }
-      message = `A resposta correta é "${correctAnswer}".`;
-    }
-  }
+            if (currentQuestion.type === 'multiple-choice') {
+                questionContent.innerHTML = `
+                    <p class="word-to-translate">${currentQuestion.question}</p>
+                    <div class="multiple-choice-options">
+                        ${currentQuestion.options.map((option, index) => `<button class="option-button" data-index="${index}">${option}</button>`).join('')}
+                    </div>
+                `;
+                document.querySelectorAll('.option-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
+                        e.target.classList.add('selected');
+                        actionBtn.removeAttribute('disabled');
+                    });
+                });
+            } else if (currentQuestion.type === 'matching') {
+                questionContent.innerHTML = `
+                    <div class="match-game-container">
+                        <div id="left-column">
+                            ${currentQuestion.left.map((word, index) => `<button class="match-item" data-side="left" data-index="${index}">${word}</button>`).join('')}
+                        </div>
+                        <div id="right-column">
+                            ${currentQuestion.right.map((word, index) => `<button class="match-item" data-side="right" data-index="${index}">${word}</button>`).join('')}
+                        </div>
+                    </div>
+                `;
+                document.querySelectorAll('.match-item').forEach(button => {
+                    button.addEventListener('click', handleMatchClick);
+                });
+            } else if (currentQuestion.type === 'text-input') {
+                questionContent.innerHTML = `
+                    <p class="word-to-translate">${currentQuestion.question}</p>
+                    <div class="answer-input-container">
+                        <input type="text" id="text-answer-input" class="answer-input" placeholder="${currentQuestion.placeholder}">
+                    </div>
+                `;
+                const textInput = document.getElementById('text-answer-input');
+                textInput.addEventListener('input', () => {
+                    if (textInput.value.trim().length > 0) {
+                        actionBtn.removeAttribute('disabled');
+                    } else {
+                        actionBtn.setAttribute('disabled', 'true');
+                    }
+                });
+                textInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !actionBtn.disabled) {
+                        checkAnswer();
+                    }
+                });
+                textInput.focus();
+            }
+        }
 
-  if (isCorrect) {
-    resultMessageElement.textContent = message;
-    resultMessageElement.className = 'feedback-message correct';
-    userAnswerInput.classList.add('correct');
-    wordsAnswered++;
-    updateProgressBar();
-  } else {
-    resultMessageElement.textContent = message;
-    resultMessageElement.className = 'feedback-message incorrect';
-    userAnswerInput.classList.add('incorrect');
-  }
+        function handleMatchClick(e) {
+            const clickedItem = e.target;
+            if (clickedItem.classList.contains('matched')) return;
 
-  userAnswerInput.setAttribute('disabled', 'true');
-  checkAnswerBtn.classList.add('hidden');
-  nextQuestionBtn.classList.remove('hidden');
-});
+            if (selectedAnswers.length === 0) {
+                selectedAnswers.push(clickedItem);
+                clickedItem.classList.add('selected');
+            } else {
+                const firstSelection = selectedAnswers[0];
+                if (firstSelection.dataset.side !== clickedItem.dataset.side) {
+                    selectedAnswers.push(clickedItem);
+                    checkMatchingAnswer();
+                } else {
+                    firstSelection.classList.remove('selected');
+                    selectedAnswers = [clickedItem];
+                    clickedItem.classList.add('selected');
+                }
+            }
+        }
 
-// Evento de click para a próxima pergunta
-nextQuestionBtn.addEventListener('click', nextQuestion);
+        function checkMatchingAnswer() {
+            const [leftItem, rightItem] = selectedAnswers;
+            const leftWord = leftItem.textContent;
+            const rightWord = rightItem.textContent;
 
-// Novo evento de teclado no documento para capturar a tecla 'Enter'
-document.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    if (!addWordsSection.classList.contains('hidden') && englishWordInput.value && portugueseWordInput.value) {
-      addBtn.click();
-    } else if (!gameSection.classList.contains('hidden') && !checkAnswerBtn.classList.contains('hidden') && userAnswerInput.value) {
-      checkAnswerBtn.click();
-    } else if (!gameSection.classList.contains('hidden') && !nextQuestionBtn.classList.contains('hidden')) {
-      nextQuestionBtn.click();
-    }
-  }
-});
+            const correctPair = currentQuestion.correctAnswers.find(pair => 
+                (pair.english === leftWord && pair.portuguese === rightWord) ||
+                (pair.portuguese === leftWord && pair.english === rightWord)
+            );
+            
+            if (correctPair) {
+                leftItem.classList.remove('selected');
+                rightItem.classList.remove('selected');
+                leftItem.classList.add('correct', 'matched');
+                rightItem.classList.add('correct', 'matched');
+                
+                // Diminui a contagem de erros para a palavra correta
+                if (difficultWords[correctPair.english] && difficultWords[correctPair.english] > 0) {
+                    difficultWords[correctPair.english]--;
+                }
+                saveDictionary();
 
-// Carrega o dicionário ao iniciar a página
-loadDictionary();
+            } else {
+                leftItem.classList.add('incorrect');
+                rightItem.classList.add('incorrect');
+                
+                setTimeout(() => {
+                    leftItem.classList.remove('selected', 'incorrect');
+                    rightItem.classList.remove('selected', 'incorrect');
+                }, 500);
+                
+                const wordKey = currentQuestion.correctAnswers.find(pair => pair.english === leftWord || pair.portuguese === leftWord).english;
+                if (difficultWords[wordKey]) {
+                    difficultWords[wordKey]++;
+                } else {
+                    difficultWords[wordKey] = 1;
+                }
+                saveDictionary();
+            }
+            
+            selectedAnswers = [];
+            
+            const allMatched = document.querySelectorAll('.match-item.matched').length;
+            if (allMatched === currentQuestion.correctAnswers.length * 2) { 
+                resultMessageElement.textContent = 'Correto! 🎉';
+                resultMessageElement.className = 'feedback-message correct';
+                actionBtn.textContent = 'Próxima';
+                actionBtn.classList.remove('verify');
+                actionBtn.classList.add('next');
+                actionBtn.removeAttribute('disabled');
+            } else {
+                 if(correctPair === undefined){
+                    resultMessageElement.textContent = 'Incorreto, tente novamente. 😔';
+                    resultMessageElement.className = 'feedback-message incorrect';
+                 }
+            }
+        }
+
+        function getNextWord() {
+            let wordWithMostErrors = null;
+            let maxErrors = 0;
+
+            for (const wordKey in difficultWords) {
+                if (difficultWords[wordKey] > maxErrors) {
+                    maxErrors = difficultWords[wordKey];
+                    wordWithMostErrors = wordKey;
+                }
+            }
+
+            if (wordWithMostErrors) {
+                // Existe uma palavra com erros, retorna ela
+                return dictionary.find(w => w.english === wordWithMostErrors);
+            } else {
+                // Todas as palavras foram acertadas, então escolhe uma aleatória
+                const randomIndex = Math.floor(Math.random() * dictionary.length);
+                return dictionary[randomIndex];
+            }
+        }
+
+        function getMatchingWords() {
+            // Lógica similar a getNextWord, mas para um grupo de 4 palavras
+            let words = [];
+            const sortedDifficultWords = Object.entries(difficultWords)
+                .sort(([, a], [, b]) => b - a)
+                .map(([key]) => dictionary.find(w => w.english === key));
+            
+            let i = 0;
+            // Pega as palavras mais difíceis primeiro
+            while (words.length < 4 && i < sortedDifficultWords.length) {
+                words.push(sortedDifficultWords[i]);
+                i++;
+            }
+
+            // Preenche o resto com palavras aleatórias se necessário
+            const remainingWords = dictionary.filter(w => !words.includes(w));
+            shuffleArray(remainingWords);
+            words = [...words, ...remainingWords.slice(0, 4 - words.length)];
+
+            return shuffleArray(words);
+        }
+
+        function nextQuestion() {
+            const questionTypes = ['multiple-choice', 'text-input'];
+            let randomType;
+
+            if (dictionary.length < 4) {
+                randomType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+            } else {
+                questionTypes.push('matching');
+                randomType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+            }
+            
+            // Lógica para priorizar palavras mais difíceis no matching game
+            if (randomType === 'matching') {
+                const wordsWithErrors = Object.keys(difficultWords).filter(key => difficultWords[key] > 0);
+                if (wordsWithErrors.length >= 4) {
+                    // Garante que o jogo de ligar seja com as palavras mais difíceis se houver o suficiente
+                    generateMatchingGame();
+                } else {
+                    // Se não houver 4 palavras difíceis, gera outro tipo de pergunta
+                    const newQuestionTypes = questionTypes.filter(t => t !== 'matching');
+                    const newRandomType = newQuestionTypes[Math.floor(Math.random() * newQuestionTypes.length)];
+                    if (newRandomType === 'multiple-choice') {
+                        generateMultipleChoice();
+                    } else {
+                        generateTranslateByTyping();
+                    }
+                }
+            } else if (randomType === 'multiple-choice') {
+                generateMultipleChoice();
+            } else if (randomType === 'text-input') {
+                generateTranslateByTyping();
+            }
+        }
+
+        function checkAnswer() {
+            let isCorrect = false;
+            let message = '';
+            let wordKey = currentQuestion.wordKey;
+
+            if (currentQuestion.type === 'multiple-choice') {
+                const selectedButton = document.querySelector('.option-button.selected');
+                if (!selectedButton) return;
+
+                const selectedAnswer = selectedButton.textContent;
+                isCorrect = normalizeString(selectedAnswer) === normalizeString(currentQuestion.correctAnswer);
+                
+                if (isCorrect) {
+                    message = 'Correto! 🎉';
+                    selectedButton.classList.add('correct');
+                } else {
+                    message = `Incorreto. A resposta certa era "${currentQuestion.correctAnswer}".`;
+                    selectedButton.classList.add('incorrect');
+                    
+                    const correctButton = Array.from(document.querySelectorAll('.option-button')).find(btn => normalizeString(btn.textContent) === normalizeString(currentQuestion.correctAnswer));
+                    if(correctButton) {
+                        correctButton.classList.add('correct');
+                    }
+                }
+
+                document.querySelectorAll('.option-button').forEach(btn => btn.setAttribute('disabled', 'true'));
+
+            } else if (currentQuestion.type === 'text-input') {
+                const textInput = document.getElementById('text-answer-input');
+                const userAnswer = normalizeString(textInput.value);
+                const correctAnswerNormalized = normalizeString(currentQuestion.correctAnswer);
+                
+                isCorrect = userAnswer === correctAnswerNormalized || getSimilarity(userAnswer, correctAnswerNormalized) > 0.85;
+
+                if (isCorrect) {
+                    message = 'Correto! 🎉';
+                    textInput.classList.add('correct');
+                } else {
+                    message = `Incorreto. A resposta certa era "${currentQuestion.correctAnswer}".`;
+                    textInput.classList.add('incorrect');
+                }
+                
+                textInput.setAttribute('disabled', 'true');
+            }
+
+            resultMessageElement.textContent = message;
+            resultMessageElement.className = `feedback-message ${isCorrect ? 'correct' : 'incorrect'}`;
+
+            if (isCorrect) {
+                // Diminui a contagem de erros para a palavra
+                if (difficultWords[wordKey] && difficultWords[wordKey] > 0) {
+                    difficultWords[wordKey]--;
+                }
+            } else {
+                // Aumenta a contagem de erros para a palavra
+                if (difficultWords[wordKey]) {
+                    difficultWords[wordKey]++;
+                } else {
+                    difficultWords[wordKey] = 1;
+                }
+            }
+            saveDictionary();
+            
+            actionBtn.textContent = 'Próxima';
+            actionBtn.classList.remove('verify');
+            actionBtn.classList.add('next');
+            actionBtn.removeAttribute('disabled');
+        }
+
+        // Event Listeners
+        addBtn.addEventListener('click', () => {
+            const english = englishWordInput.value.trim();
+            const portuguese = portugueseWordInput.value.trim();
+
+            if (english && portuguese) {
+                dictionary.push({ english, portuguese });
+                englishWordInput.value = '';
+                portugueseWordInput.value = '';
+                messageElement.textContent = 'Palavra adicionada com sucesso! ✨';
+                messageElement.className = 'feedback-message correct';
+                saveDictionary();
+                renderWordList();
+                englishWordInput.focus();
+            } else {
+                messageElement.textContent = 'Por favor, preencha ambos os campos.';
+                messageElement.className = 'feedback-message incorrect';
+            }
+        });
+
+        // Habilitar botão de adicionar ao digitar
+        englishWordInput.addEventListener('input', () => {
+             messageElement.textContent = '';
+        });
+        portugueseWordInput.addEventListener('input', () => {
+             messageElement.textContent = '';
+        });
+
+        startGameBtn.addEventListener('click', () => {
+            addWordsSection.classList.add('hidden');
+            gameSection.classList.remove('hidden');
+            nextQuestion();
+        });
+
+        actionBtn.addEventListener('click', () => {
+            if (actionBtn.classList.contains('verify')) {
+                checkAnswer();
+            } else {
+                nextQuestion();
+            }
+        });
+
+        // Carrega o dicionário quando a página é carregada
+        document.addEventListener('DOMContentLoaded', loadDictionary);
     </script>
 </body>
 </html>
